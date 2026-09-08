@@ -3,75 +3,91 @@
    Same basket, same falling money. Opposite lesson: the money
    is not handed to you by a government account with your
    patron's name on it. You earn it, and then you must decide
-   what it is FOR — because a subsidy always comes with strings,
+   what it is for - because a subsidy always comes with strings,
    and every string narrows what you are free to do.
    ============================================================ */
 (function () {
   "use strict";
   var P = Arcade.P;
 
-  var W = 280, H = 280;
-  var FLOOR = H - 56;
-  var ROUND = 100;                       // seconds of working life
-
-  var basket, coins, strings, give, invest, keep, neighbors, inflationT,
-      spawnT, toast, toastT, split, subsidiesTaken, alloc;
+  var W = 300, H = 300;
+  var FLOOR = H - 62;
+  var ROUND = 90;
 
   var GIFTS = [
     "A NEIGHBOUR'S ROOF", "A WIDOW'S RENT", "AN APPRENTICE'S TOOLS",
     "A SICK MAN'S DOCTOR", "A STRANGER'S FARE", "A CHILD'S SCHOOLING"
   ];
 
-  function basketW() { return Math.max(26, 58 - strings * 6); }
+  var SUBSIDY = [
+    ".RRRRRRR.",
+    "RRRRRRRRR",
+    "RRLLLLLRR",
+    "RRLSSSLRR",
+    "RRLLLLLRR",
+    "RRRRRRRRR",
+    ".RRRRRRR."
+  ];
+  var SUBSIDY_KEY = { R: "#b3313a", L: "#e8646d", S: "#4a0d13" };
+
+  var GIFT = [
+    "..GGG..",
+    ".GGGGG.",
+    "GGGGGGG",
+    "GGLLLGG",
+    "GGGGGGG",
+    ".GGGGG.",
+    "..GGG.."
+  ];
+  var GIFT_KEY = { G: "#4f7d5a", L: "#7cc194" };
+
+  var basket, coins, strings, give, invest, keep, neighbors, inflationT,
+      spawnT, toast, toastT, split, alloc, subsidiesTaken, houseLights, lastEarn;
+
+  function basketW() { return Math.max(28, 62 - strings * 6); }
 
   function spawnCoin() {
     var r = Math.random();
     var kind = r < 0.10 ? "subsidy" : r < 0.18 ? "gift" : "wage";
     coins.push({
-      x: Arcade.rand(14, W - 14),
-      y: -10,
-      v: Arcade.rand(52, 88),
-      kind: kind,
-      spin: Math.random() * 6
+      x: Arcade.rand(16, W - 16), y: -12,
+      v: Arcade.rand(54, 92), kind: kind, spin: Math.random() * 6
     });
   }
 
-  var game = Arcade.create({
+  Arcade.create({
     id: "ten-talents",
     canvas: "#screen",
     width: W, height: H,
     title: "TEN TALENTS",
-    subtitle: "It is not what you catch. It is what you do with it.",
-    howto: "LEFT/RIGHT move the basket. SPACE picks a slice, UP/DOWN moves it. Dodge the SUBSIDY.",
-    verse: '"Well done, good and faithful servant; you were faithful over a little." Matt. 25:21',
-    scoreLabel: "ESTATE",
-    moral: "Their game fills an account the state opened for your child. This one asks what a free man does with his own.",
+    subtitle: "It is not what you catch. It is what it is for.",
+    howto: "LEFT RIGHT TO WORK - SPACE PICKS A SLICE - UP DOWN MOVES IT - DODGE THE SUBSIDY",
+    verse: '"WELL DONE, GOOD AND FAITHFUL SERVANT; YOU WERE FAITHFUL OVER A LITTLE" MATT. 25:21',
+    scoreLabel: "THE ESTATE",
+    moral: "THEIR GAME FILLS AN ACCOUNT THE STATE OPENED FOR YOUR CHILD. THIS ONE ASKS WHAT A FREE MAN DOES WITH HIS OWN.",
 
     reset: function () {
       basket = { x: W / 2 };
       coins = []; strings = 0; subsidiesTaken = 0;
       give = 0; invest = 0; keep = 0; neighbors = 0;
       inflationT = 0; spawnT = 0; toast = ""; toastT = 0;
-      alloc = 0;                          // 0 give, 1 invest, 2 keep
-      split = [20, 45, 35];
+      alloc = 0; split = [20, 45, 35]; lastEarn = 0;
+      houseLights = [];
     },
 
     update: function (g, dt) {
       if (g.time > ROUND) {
-        var estate = Math.round(invest + keep + neighbors * 55);
-        g.score = estate;
-        g.gameOver("Invested " + Math.round(invest) + " · Kept " + Math.round(keep) +
-                   " · " + neighbors + " neighbours who would do the same for you.");
+        g.score = Math.round(invest + keep + neighbors * 55);
+        g.gameOver("Invested " + Math.round(invest) + ", kept " + Math.round(keep) +
+                   ", and " + neighbors + " neighbours who would do the same for you.");
         return;
       }
 
-      // Move the basket. Strings make it smaller, never faster.
-      var speed = 150;
+      var speed = 158;
       if (g.held("left")) basket.x -= speed * dt;
       if (g.held("right")) basket.x += speed * dt;
       basket.x = Arcade.clamp(basket.x, basketW() / 2, W - basketW() / 2);
 
-      // SPACE picks which slice you are steering; UP/DOWN moves it.
       if (g.pressed("action")) alloc = (alloc + 1) % 3;
       if (g.pressed("up")) shift(alloc, 5);
       if (g.pressed("down")) shift(alloc, -5);
@@ -79,8 +95,6 @@
       spawnT += dt;
       var rate = Arcade.clamp(0.62 - g.time * 0.003, 0.28, 0.62);
       if (spawnT > rate) { spawnT = 0; spawnCoin(); }
-
-      // Neighbours you helped send work back your way.
       if (neighbors > 0 && Math.random() < neighbors * 0.006) spawnCoin();
 
       var i;
@@ -90,136 +104,186 @@
         c.spin += dt * 5;
 
         var bw = basketW();
-        if (c.y > FLOOR - 14 && c.y < FLOOR + 8 &&
-            Math.abs(c.x - basket.x) < bw / 2 + 6) {
+        if (c.y > FLOOR - 16 && c.y < FLOOR + 8 && Math.abs(c.x - basket.x) < bw / 2 + 6) {
           coins.splice(i, 1);
           if (c.kind === "subsidy") {
-            strings++; subsidiesTaken++;
-            keep += 120;                            // the money is real
+            strings++; subsidiesTaken++; keep += 120;
             toast = "SUBSIDY TAKEN. +120, AND A STRING. YOUR BASKET IS SMALLER NOW.";
-            toastT = 3;
+            toastT = 3.2;
+            g.kick(6); g.flash(P.crimson, 0.35);
+            g.burst(c.x, FLOOR - 8, P.crimsonLite, 14, { speed: 80, lift: 26 });
           } else if (c.kind === "gift") {
             neighbors++;
             toast = "A NEIGHBOUR REPAID A KINDNESS.";
-            toastT = 2;
+            toastT = 2.2;
+            g.flash(P.olive, 0.2);
+            g.burst(c.x, FLOOR - 8, P.oliveLite, 12, { speed: 66, lift: 22 });
           } else {
             earn(24);
+            lastEarn = 0.3;
+            g.burst(c.x, FLOOR - 8, P.goldLite, 6, { speed: 52, lift: 18, life: 0.5 });
           }
           continue;
         }
         if (c.y > H + 12) coins.splice(i, 1);
       }
 
-      // Inflation eats what sits idle. Invested capital and given money do not sit.
       inflationT += dt;
       if (inflationT > 1) {
         inflationT = 0;
         keep *= 0.985;
-        keep -= strings * 1.2;                      // compliance costs money too
+        keep -= strings * 1.2;
         if (keep < 0) keep = 0;
-        invest *= 1.012;                            // patient capital compounds
+        invest *= 1.012;
+        // a window lights up for each neighbour made
+        while (houseLights.length < neighbors) {
+          houseLights.push({ i: houseLights.length, t: 0 });
+        }
       }
 
       if (toastT > 0) toastT -= dt;
+      if (lastEarn > 0) lastEarn -= dt;
       g.score = Math.round(invest + keep + neighbors * 55);
     },
 
     draw: function (g) {
-      g.clear("#0a1020");
-
-      // Sky and a plain house on the horizon: what an estate is actually for.
-      g.rect(0, FLOOR + 10, W, H - FLOOR - 10, "#141d33");
-      g.rect(W - 62, FLOOR - 12, 34, 22, "#1d2846");
-      g.rect(W - 66, FLOOR - 20, 42, 9, "#2b3a63");
-      g.rect(W - 52, FLOOR - 4, 8, 14, "#3a2415");
-
-      // HUD
-      g.rect(0, 0, W, 58, "rgba(4,6,13,.68)");
-      g.text("TEN TALENTS", 6, 5, 8, P.goldLite);
-      var left = Math.max(0, Math.ceil(ROUND - g.time));
-      g.text(left + "s", W - 6, 6, 8, left < 15 ? P.crimson : P.parchment, "right");
-
-      g.text("ESTATE " + Math.round(invest + keep + neighbors * 55), 6, 20, 7, P.oliveLite);
-      g.text("STRINGS " + strings, W - 6, 21, 7, strings ? P.crimson : P.dim, "right");
-
-      // The split: three slices you steer while you work.
-      var labels = ["GIVE", "INVEST", "KEEP"];
-      var colors = [P.oliveLite, P.goldLite, P.sky];
-      for (var s = 0; s < 3; s++) {
-        var bx = 6 + s * 90;
-        var sel = alloc === s;
-        g.text(labels[s] + " " + Math.round(split[s]) + "%", bx, 34, 6, sel ? P.parchment : P.dim);
-        g.rect(bx, 44, 82, 6, "#151d33");
-        g.rect(bx, 44, Math.round(split[s] * 0.82), 6, colors[s]);
-        if (sel) g.frameRect(bx - 2, 42, 86, 10, P.parchment, 1);
+      /* ---- evening sky over a street ---- */
+      g.gradient(0, 0, W, FLOOR + 10, "#0a1020", "#152040", 8);
+      for (var s = 0; s < 26; s++) {
+        var sx = (s * 61) % W, sy = 62 + (s * 43) % 110;
+        g.rect(sx, sy, 1, 1, "rgba(244,234,216,.14)");
       }
 
-      // Falling money
-      for (var i = 0; i < coins.length; i++) {
+      /* ---- the street: your house and your neighbours' ---- */
+      var groundY = FLOOR + 8;
+      g.rect(0, groundY, W, H - groundY, "#0d1424");
+      g.rect(0, groundY, W, 2, "#1c2748");
+
+      // your own house on the right, windows lighting as neighbours are made
+      drawHouse(g, W - 56, groundY - 34, 46, 34, neighbors, g.wall);
+      // neighbours' houses receding to the left
+      for (var n = 0; n < Math.min(neighbors, 5); n++) {
+        drawHouse(g, W - 96 - n * 34, groundY - 24, 26, 24, 1, g.wall + n);
+      }
+
+      /* ---- falling money ---- */
+      for (i = 0; i < coins.length; i++) {
         var c = coins[i];
-        var wob = Math.abs(Math.sin(c.spin)) * 3 + 3;
         if (c.kind === "subsidy") {
-          g.rect(c.x - 8, c.y - 8, 16, 16, P.crimson);
-          g.rect(c.x - 5, c.y - 5, 10, 10, "#d1616a");
-          g.text("$", c.x, c.y - 4, 6, "#3a0d10", "center");
-          g.text("STRINGS", c.x, c.y + 10, 5, P.crimson, "center");
+          // the strings it is already trailing, before you touch it
+          for (var t = 0; t < 3; t++) {
+            g.rect(c.x - 5 + t * 5, Math.max(0, c.y - 22), 1, 15, "rgba(179,49,58,.55)");
+          }
+          g.ctx.globalAlpha = 0.22 + 0.1 * Math.sin(g.wall * 6);
+          g.rect(c.x - 13, c.y - 11, 26, 24, P.crimson);
+          g.ctx.globalAlpha = 1;
+          g.sprite(SUBSIDY, c.x - 9, c.y - 7, 2, SUBSIDY_KEY);
+          // label only while the crate is in the play field: behind the HUD
+          // above, and past the basket below, it would cross other text
+          if (c.y + 10 > 62 && c.y + 17 < FLOOR - 6) {
+            g.text("STRINGS", c.x, c.y + 10, 1, P.crimsonLite, "center");
+          }
         } else if (c.kind === "gift") {
-          g.rect(c.x - 6, c.y - 6, 12, 12, P.olive);
-          g.rect(c.x - 1, c.y - 8, 3, 16, P.oliveLite);
-          g.rect(c.x - 8, c.y - 1, 16, 3, P.oliveLite);
+          g.sprite(GIFT, c.x - 7, c.y - 7, 2, GIFT_KEY);
         } else {
-          g.rect(c.x - wob / 2, c.y - 6, wob, 12, P.gold);
-          g.rect(c.x - wob / 2, c.y - 4, wob, 8, P.goldLite);
+          // a coin, tumbling: its width narrows as it spins
+          var wob = Math.max(2, Math.round(Math.abs(Math.sin(c.spin)) * 8) + 1);
+          g.rect(c.x - wob / 2, c.y - 5, wob, 10, P.goldDeep);
+          g.rect(c.x - wob / 2, c.y - 5, wob, 8, P.gold);
+          g.rect(c.x - wob / 2 + 1, c.y - 4, Math.max(1, wob - 2), 3, P.goldLite);
         }
       }
 
-      // Basket — it shrinks with every string attached
+      /* ---- the strings that tether your basket ---- */
       var bw = basketW();
-      g.rect(basket.x - bw / 2, FLOOR - 8, bw, 12, "#8a5a3b");
-      g.rect(basket.x - bw / 2 + 2, FLOOR - 6, bw - 4, 8, "#6b4226");
-      for (var w = 4; w < bw - 3; w += 6) {
-        g.rect(basket.x - bw / 2 + w, FLOOR - 6, 1, 8, "rgba(0,0,0,.3)");
-      }
-      g.frameRect(basket.x - bw / 2, FLOOR - 8, bw, 12, strings ? P.crimson : P.gold, 1);
-
-      // Strings, drawn as literal tethers from above
       for (var st = 0; st < strings; st++) {
-        var tx = basket.x - bw / 2 + 6 + st * 7;
-        g.rect(tx, 58, 1, FLOOR - 66, "rgba(179,49,58,.45)");
+        var tx = basket.x - bw / 2 + 5 + st * 7;
+        var sway = Math.sin(g.wall * 2 + st) * 1.5;
+        g.rect(tx + sway, 63, 1, FLOOR - 71, "rgba(179,49,58,.4)");
       }
 
-      // Ticker, then the ledger along the bottom edge
-      if (toastT > 0) {
-        g.textBlock(toast, W / 2, FLOOR + 14, W - 14, 6,
-                    strings ? P.crimson : P.parchment, "center");
+      /* ---- basket ---- */
+      var bxx = basket.x - bw / 2, byy = FLOOR - 10;
+      g.rect(bxx, byy, bw, 14, "#6b4226");
+      g.rect(bxx + 1, byy + 1, bw - 2, 12, "#8a5a3b");
+      for (var wv = 3; wv < bw - 2; wv += 5) g.rect(bxx + wv, byy + 1, 1, 12, "rgba(0,0,0,.28)");
+      g.rect(bxx, byy + 2, bw, 1, "rgba(0,0,0,.25)");
+      g.rect(bxx, byy + 7, bw, 1, "rgba(0,0,0,.25)");
+      g.rect(bxx, byy, bw, 2, strings ? P.crimson : P.gold);      // rim
+      g.frameRect(bxx, byy, bw, 14, strings ? "rgba(179,49,58,.8)" : "rgba(217,164,65,.7)", 1);
+
+      /* ---- HUD, drawn last so nothing falls across it: coins spawn
+             above the fold and emerge from behind the panel ---- */
+      g.rect(0, 0, W, 62, "#070c18");
+      g.rect(0, 62, W, 1, "rgba(217,164,65,.3)");
+      g.textShadow("TEN TALENTS", 8, 5, 2, P.goldLite);
+
+      var left = Math.max(0, Math.ceil(ROUND - g.time));
+      var urgent = left < 15;
+      g.text("TIME", W - 8 - g.textWidth("00", 2) - 30, 6, 1, P.dim);
+      g.textShadow(String(left), W - 8, 4, 2, urgent && Math.floor(g.wall * 4) % 2 === 0 ? P.crimsonLite
+                   : urgent ? P.crimson : P.parchment, "right");
+
+      g.text("ESTATE", 8, 24, 1, P.dim);
+      g.textShadow(String(Math.round(invest + keep + neighbors * 55)), 8 + 44, 23, 1,
+                   lastEarn > 0 ? P.white : P.oliveLite);
+      if (strings) {
+        g.text("STRINGS " + strings, W - 8, 25, 1, P.crimsonLite, "right");
       } else {
-        g.text("1/2/3 PICKS A SLICE  ·  LEFT/RIGHT TO WORK", W / 2, FLOOR + 16, 5,
-               "rgba(154,166,196,.6)", "center");
+        g.text("NO STRINGS", W - 8, 25, 1, P.dimmer, "right");
       }
 
-      g.text("GIVEN " + Math.round(give), 6, FLOOR + 30, 6, P.oliveLite);
-      g.text("INVESTED " + Math.round(invest), 6, FLOOR + 40, 6, P.goldLite);
-      g.text("KEPT " + Math.round(keep), 6, FLOOR + 50, 6, P.sky);
-      g.text("NEIGHBOURS " + neighbors, W - 6, FLOOR + 30, 6, P.oliveLite, "right");
+      // the split, three slices you steer while you work
+      var labels = ["GIVE", "INVEST", "KEEP"];
+      var colors = [P.oliveLite, P.goldLite, P.sky];
+      for (var i = 0; i < 3; i++) {
+        var bx = 8 + i * 96, bw2 = 88;
+        var sel = alloc === i;
+        if (sel) {
+          g.rect(bx - 3, 34, bw2 + 6, 22, "rgba(255,255,255,.07)");
+          g.frameRect(bx - 3, 34, bw2 + 6, 22, "rgba(244,234,216,.55)", 1);
+        }
+        g.text(labels[i], bx, 37, 1, sel ? P.parchment : P.dim);
+        g.text(Math.round(split[i]) + "%", bx + bw2, 37, 1, sel ? P.parchment : P.dimmer, "right");
+        g.rect(bx, 48, bw2, 5, "#141d33");
+        g.rect(bx, 48, Math.round(split[i] / 100 * bw2), 5, colors[i]);
+        g.frameRect(bx, 48, bw2, 5, "rgba(0,0,0,.4)", 1);
+      }
+
+      /* ---- ticker ---- */
+      if (toastT > 0) {
+        g.ctx.globalAlpha = Math.min(1, toastT * 2);
+        g.textBlock(toast, W / 2, FLOOR + 16, W - 16, 1,
+                    strings && toast.indexOf("SUBSIDY") === 0 ? P.crimsonLite : P.parchment, "center");
+        g.ctx.globalAlpha = 1;
+      } else {
+        g.text("SPACE PICKS A SLICE - UP AND DOWN MOVE IT", W / 2, FLOOR + 18, 1,
+               "rgba(139,151,184,.5)", "center");
+      }
+
+      /* ---- the books ---- */
+      var ly = H - 30;
+      g.rect(8, ly - 5, W - 16, 1, "rgba(217,164,65,.22)");
+      g.text("GIVEN " + Math.round(give), 8, ly, 1, P.oliveLite);
+      g.text("INVESTED " + Math.round(invest), 8, ly + 11, 1, P.goldLite);
+      g.text("KEPT " + Math.round(keep), 8 + 118, ly, 1, P.sky);
+      g.text("NEIGHBOURS " + neighbors, 8 + 118, ly + 11, 1, neighbors ? P.oliveLite : P.dimmer);
+      if (subsidiesTaken) {
+        g.text("STRINGS " + strings, W - 8, ly + 11, 1, P.crimsonLite, "right");
+      }
     }
   });
 
-  // ---- allocation ------------------------------------------------------
+  /* ---------- allocation ---------- */
 
   function earn(amount) {
-    var giving = amount * split[0] / 100;
-    var investing = amount * split[1] / 100;
-    var keeping = amount * split[2] / 100;
-
-    give += giving;
-    invest += investing;
-    keep += keeping;
-
-    // Charity is not a cost centre. Enough of it makes a neighbour.
+    give += amount * split[0] / 100;
+    invest += amount * split[1] / 100;
+    keep += amount * split[2] / 100;
     if (give >= (neighbors + 1) * 90) {
       neighbors++;
       toast = "YOU PAID FOR " + Arcade.pick(GIFTS) + ".";
-      toastT = 2.4;
+      toastT = 2.6;
     }
   }
 
@@ -235,32 +299,42 @@
     var others = [0, 1, 2].filter(function (i) { return i !== fixed; });
     var pool = split[others[0]] + split[others[1]];
     var need = 100 - split[fixed];
-    if (pool <= 0) {
-      split[others[0]] = need / 2;
-      split[others[1]] = need / 2;
-    } else {
+    if (pool <= 0) { split[others[0]] = need / 2; split[others[1]] = need / 2; }
+    else {
       split[others[0]] = split[others[0]] / pool * need;
       split[others[1]] = split[others[1]] / pool * need;
     }
   }
 
-  // Number keys give direct, obvious control over the split.
+  function drawHouse(g, x, y, w, h, lit, phase) {
+    g.rect(x, y + 6, w, h - 6, "#1a2440");
+    g.rect(x, y + 6, w, 1, "#26325a");
+    // roof
+    for (var r = 0; r < 7; r++) g.rect(x - 3 + r, y + r, w + 6 - r * 2, 1, "#2b3a63");
+    // windows
+    var cols = Math.floor((w - 6) / 9);
+    for (var i = 0; i < cols; i++) {
+      var on = lit > 0 && (Math.sin(phase * 0.7 + i * 2) > -0.6);
+      g.rect(x + 4 + i * 9, y + 12, 6, 6, on ? "#ffcb6b" : "#101a30");
+      if (on) g.rect(x + 4 + i * 9, y + 12, 6, 1, "#fff2cf");
+    }
+    g.rect(x + Math.floor(w / 2) - 3, y + h - 9, 6, 9, "#3a2415");
+  }
+
+  // Number keys give direct control over the split.
   window.addEventListener("keydown", function (e) {
     var map = { Digit1: 0, Digit2: 1, Digit3: 2 };
     if (!(e.code in map)) return;
     e.preventDefault();
-    var i = map[e.code];
-    alloc = i;
-    shift(i, 5);
+    alloc = map[e.code];
+    shift(alloc, 5);
   });
 
-  // Touch buttons: <button data-alloc="0">
   Array.prototype.forEach.call(document.querySelectorAll("[data-alloc]"), function (el) {
     el.addEventListener("pointerdown", function (e) {
       e.preventDefault();
-      var i = parseInt(el.getAttribute("data-alloc"), 10);
-      alloc = i;
-      shift(i, 5);
+      alloc = parseInt(el.getAttribute("data-alloc"), 10);
+      shift(alloc, 5);
     });
   });
 })();

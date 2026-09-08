@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TEN TALENTS — The Free Arcade</title>
 <meta name="description" content="Ten Talents — the same falling money as Trump Savings Tycoon, but you earn it, you answer for it, and every subsidy comes with a string that shrinks the basket.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/fonts.css">
 <link rel="stylesheet" href="../assets/css/arcade.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
 </head>
@@ -35,9 +33,10 @@
         <span class="verse">Matt. 25:21</span>
       </div>
       <div class="screen-shell">
-        <canvas id="screen" width="280" height="280" aria-label="TEN TALENTS game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+        <canvas id="screen" width="300" height="300" aria-label="TEN TALENTS game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
       </div>
 
+      <div class="control-panel">
       <div class="controls-row">
         <button class="btn primary" data-key="start" type="button">Start / Restart</button>
         <button class="btn" data-key="pause" type="button">Pause</button>
@@ -51,11 +50,11 @@
         <button class="btn" data-key="up" type="button">MORE</button>
         <button class="btn" data-key="down" type="button">LESS</button>
       </div>
-    </div>
-
-    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      </div>
+      <p class="cab-hint">
       Ninety seconds of working life, then the estate is counted: what you invested, what you kept, and the neighbours who would do for you what you did for them. Idle cash is eaten by inflation. Invested capital compounds. Given money makes neighbours, and neighbours send work back your way.
-    </p>
+      </p>
+    </div>
   </div>
 
   <aside class="sidebar">
@@ -109,6 +108,7 @@
   </div>
 </footer>
 
+<script src="../assets/js/pixelfont.js"></script>
 <script src="../assets/js/arcade.js"></script>
 <script src="../assets/js/games/ten-talents.js"></script>
 </body>

@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>THE NINETY-NINE — The Free Arcade</title>
 <meta name="description" content="The Ninety-Nine — the same growing trail as Rio Run, except what follows you is a flock you are answerable for.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/fonts.css">
 <link rel="stylesheet" href="../assets/css/arcade.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
 </head>
@@ -35,9 +33,10 @@
         <span class="verse">Luke 15:4</span>
       </div>
       <div class="screen-shell">
-        <canvas id="screen" width="240" height="280" aria-label="THE NINETY-NINE game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+        <canvas id="screen" width="264" height="296" aria-label="THE NINETY-NINE game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
       </div>
 
+      <div class="control-panel">
       <div class="controls-row">
         <button class="btn primary" data-key="start" type="button">Start / Restart</button>
         <button class="btn" data-key="pause" type="button">Pause</button>
@@ -50,11 +49,11 @@
         <button class="btn" data-key="down" type="button">▼</button>
         <button class="btn" data-key="right" type="button">▶</button>
       </div>
-    </div>
-
-    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      </div>
+      <p class="cab-hint">
       Gathering scores. Bringing the whole flock through the gate scores far more — the reward rises with the square of how many you led home at once. Walking into your own flock ends the run.
-    </p>
+      </p>
+    </div>
   </div>
 
   <aside class="sidebar">
@@ -105,6 +104,7 @@
   </div>
 </footer>
 
+<script src="../assets/js/pixelfont.js"></script>
 <script src="../assets/js/arcade.js"></script>
 <script src="../assets/js/games/ninety-nine.js"></script>
 </body>

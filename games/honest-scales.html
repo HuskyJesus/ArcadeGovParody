@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HONEST SCALES — The Free Arcade</title>
 <meta name="description" content="Honest Scales — the same conveyor as Supply Line, but you are the merchant rather than the censor, and the only ground for refusal is a false label.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/fonts.css">
 <link rel="stylesheet" href="../assets/css/arcade.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
 </head>
@@ -35,9 +33,10 @@
         <span class="verse">Prov. 11:1</span>
       </div>
       <div class="screen-shell">
-        <canvas id="screen" width="260" height="280" aria-label="HONEST SCALES game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+        <canvas id="screen" width="288" height="300" aria-label="HONEST SCALES game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
       </div>
 
+      <div class="control-panel">
       <div class="controls-row">
         <button class="btn primary" data-key="start" type="button">Start / Restart</button>
         <button class="btn" data-key="pause" type="button">Pause</button>
@@ -49,11 +48,11 @@
         <button class="btn" data-key="down" type="button">WEIGH</button>
         <button class="btn" data-key="right" type="button">SELL</button>
       </div>
-    </div>
-
-    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      </div>
+      <p class="cab-hint">
       Two ways to lose your good name: sell a crate whose label lies, or refuse a crate whose label is true. The second is punished as surely as the first. That is the point.
-    </p>
+      </p>
+    </div>
   </div>
 
   <aside class="sidebar">
@@ -105,6 +104,7 @@
   </div>
 </footer>
 
+<script src="../assets/js/pixelfont.js"></script>
 <script src="../assets/js/arcade.js"></script>
 <script src="../assets/js/games/honest-scales.js"></script>
 </body>

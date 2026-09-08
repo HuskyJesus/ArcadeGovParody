@@ -42,16 +42,39 @@ unavailable.
 index.html                    the arcade floor + the ledger comparing cabinets
 about.html                    the argument
 games/*.html                  one page per cabinet
-assets/css/arcade.css         shared styling
-assets/js/arcade.js           shared engine: fixed-resolution canvas, loop,
-                              input (keyboard + touch), attract/pause/game-over
+assets/css/arcade.css         cabinet chrome, CRT glass, typography
+assets/css/fonts.css          @font-face for the self-hosted latin subsets
+assets/fonts/*.woff2          Press Start 2P, EB Garamond, IBM Plex Mono
+assets/js/pixelfont.js        hand-drawn 5x7 bitmap font for canvas text
+assets/js/arcade.js           engine: canvas, loop, input, sprites, particles,
+                              attract/pause/game-over cards, high scores
+assets/js/attract.js          the looping vignettes on the lobby cabinets
 assets/js/games/*.js          one file per cabinet
 ```
 
 Each game declares a logical resolution and supplies `reset`, `update` and
-`draw`; the engine owns the loop, the input edge-detection, the title card, the
-pause banner, the game-over card and the high score. Every cabinet works with a
-keyboard and with on-screen touch buttons.
+`draw`; the engine owns the loop, input edge-detection, the overlay cards, screen
+shake, particles and the high score. Every cabinet works with a keyboard and with
+on-screen touch buttons.
+
+## On the visuals
+
+Three decisions do most of the work:
+
+**Canvas text is a bitmap font, not `fillText`.** At 6-8px the browser rasteriser
+antialiases, hinting shifts baselines, and the result differs on every OS. Every
+glyph in `pixelfont.js` is a 5x7 grid drawn as integer rects, so text is exact at
+any whole scale and identical everywhere. It folds em dashes, curly quotes and
+accents onto glyphs it has, so prose never renders as a row of boxes.
+
+**Fonts are self-hosted.** No CDN request, so the arcade looks right on a
+locked-down network, a plane, or a kiosk — and there is no third party watching
+who plays.
+
+**The lobby cabinets are alive.** Each card runs a real looping vignette of its
+game, complete with the same bitmap-font HUD the cabinet itself uses, all driven
+from a single animation frame. Cards scrolled out of view stop drawing, and
+`prefers-reduced-motion` gets one still frame instead.
 
 ## Terms
 
