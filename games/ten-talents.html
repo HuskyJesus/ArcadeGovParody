@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEN TALENTS — The Free Arcade</title>
+<meta name="description" content="Ten Talents — the same falling money as Trump Savings Tycoon, but you earn it, you answer for it, and every subsidy comes with a string that shrinks the basket.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../index.html#ledger">The Ledger</a>
+      <a href="../about.html">Why We Built It</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>TEN TALENTS</span>
+        <span class="verse">Matt. 25:21</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="280" height="280" aria-label="TEN TALENTS game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">◀</button>
+        <button class="btn" data-key="right" type="button">▶</button>
+        <button class="btn" data-key="action" type="button">SLICE</button>
+        <button class="btn" data-key="up" type="button">MORE</button>
+        <button class="btn" data-key="down" type="button">LESS</button>
+      </div>
+    </div>
+
+    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      Ninety seconds of working life, then the estate is counted: what you invested, what you kept, and the neighbours who would do for you what you did for them. Idle cash is eaten by inflation. Invested capital compounds. Given money makes neighbours, and neighbours send work back your way.
+    </p>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>← →</dt><dd>Move the basket and work</dd></div>
+        <div><dt>SPACE</dt><dd>Choose which slice you are steering</dd></div>
+        <div><dt>↑ ↓</dt><dd>Move that slice up or down</dd></div>
+        <div><dt>1 2 3</dt><dd>Jump straight to Give / Invest / Keep</dd></div>
+        <div><dt>RED CRATE</dt><dd>A subsidy. Real money, and a permanent string.</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section class="vs-card">
+      <p class="theirs">Answers: Trump Savings Tycoon</p>
+      <p>Their cabinet has you catching money out of the air to fill a government account opened in your child's name — an account branded with the name of the man who signed it into being. The money arrives from above. Nobody asks where it came from or what it is for.</p>
+      <p>Ours keeps the basket and the falling coins, and adds the two questions their version leaves out: <em>where did this come from</em>, and <em>what is it for?</em></p>
+    </section>
+
+    <section>
+      <h2>THE ARGUMENT</h2>
+      <p>The parable of the talents is not a parable about accumulation. The servant who is condemned is the one who kept his master's money perfectly safe and did nothing with it. Stewardship means the money is <em>for</em> something, and you will be asked.</p>
+      <p>So this cabinet makes you split every wage three ways while you are still working. Giving is not a leak in the bucket — enough of it makes a neighbour, and neighbours send work back to you, which is exactly how a civil society actually functions and exactly what a transfer program cannot manufacture.</p>
+      <p>And then there are the subsidies. They are real money and they are easy to catch. Each one adds a string, and every string narrows your basket for the rest of the run and skims a little off the top forever. That is not a joke about welfare. It is the oldest observation in classical liberalism: nothing the state hands you arrives without a hand still attached to it.</p>
+      <div class="scripture">
+        &ldquo;Well done, good and faithful servant; you have been faithful over a little, I will set you over much.&rdquo;
+        <cite>Matthew 25:21 · &ldquo;A good man leaves an inheritance to his children's children&rdquo; — Proverbs 13:22</cite>
+      </div>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="living-stones.html">LIVING STONES →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is an independent work of political satire and civic commentary, published by private citizens.
+      It is not affiliated with, endorsed by, or connected to the White House, the United States government,
+      or any agency, official, or campaign thereof. References to arcade.gov and its games are for criticism and comment.
+      Every game here is original work.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/ten-talents.js"></script>
+</body>
+</html>

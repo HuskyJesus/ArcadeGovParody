@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ENUMERATED — The Free Arcade</title>
+<meta name="description" content="Enumerated — the same one-button flight as Flappy Bill, but every obstacle is a constitutional check, and the fewer pages the bill carries the higher it flies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../index.html#ledger">The Ledger</a>
+      <a href="../about.html">Why We Built It</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>ENUMERATED</span>
+        <span class="verse">Federalist 45</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="280" height="260" aria-label="ENUMERATED game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="action" type="button">FLY ▲</button>
+      </div>
+    </div>
+
+    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      Weight is not decoration. A heavier bill sinks faster and needs a bigger flap to lift. Pass a gate carrying few pages and you are paid a bonus for it.
+    </p>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>SPACE / ↑</dt><dd>Flap</dd></div>
+        <div><dt>—</dt><dd>Tap the screen to fly on a phone</dd></div>
+        <div><dt>GAVEL</dt><dd>Strikes a clause — the bill gets lighter</dd></div>
+        <div><dt>PORK</dt><dd>A rider — three more pages to carry</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section class="vs-card">
+      <p class="theirs">Answers: Flappy Bill (Flappy Bird)</p>
+      <p>Their cabinet flies a bald eagle carrying a bill down the National Mall. There is no committee, no chamber, no court, no objection — the bill simply travels, and the only obstacles are scenery.</p>
+      <p>Ours keeps the eagle, the bill, and the one-button flight. It restores the obstacles the founders put in the way on purpose, and names them.</p>
+    </section>
+
+    <section>
+      <h2>THE ARGUMENT</h2>
+      <p>Every gate in this cabinet is a veto point somebody deliberately built: committee, floor debate, two chambers that have to agree, a president who can refuse, courts that can strike, and an electorate that gets the last word. In the civics of their arcade these are absent. In ours they are the entire game.</p>
+      <p>The weight mechanic makes the second half of the argument. A bill that carries a subsidy for one firm, a museum named for its sponsor, an exemption for its own authors — that bill is heavier, and it deserves to be. A short bill that does one enumerated thing flies. This is not cynicism about legislating. It is the reason the process was made hard in the first place.</p>
+      <div class="scripture">
+        &ldquo;The powers delegated by the proposed Constitution to the federal government are few and defined. Those which are to remain in the State governments are numerous and indefinite.&rdquo;
+        <cite>James Madison, Federalist 45 · &ldquo;Woe to those who make unjust laws&rdquo; — Isaiah 10:1</cite>
+      </div>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="ten-talents.html">TEN TALENTS →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is an independent work of political satire and civic commentary, published by private citizens.
+      It is not affiliated with, endorsed by, or connected to the White House, the United States government,
+      or any agency, official, or campaign thereof. References to arcade.gov and its games are for criticism and comment.
+      Every game here is original work.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/enumerated.js"></script>
+</body>
+</html>

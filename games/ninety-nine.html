@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE NINETY-NINE — The Free Arcade</title>
+<meta name="description" content="The Ninety-Nine — the same growing trail as Rio Run, except what follows you is a flock you are answerable for.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../index.html#ledger">The Ledger</a>
+      <a href="../about.html">Why We Built It</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>THE NINETY-NINE</span>
+        <span class="verse">Luke 15:4</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="240" height="280" aria-label="THE NINETY-NINE game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">◀</button>
+        <button class="btn" data-key="up" type="button">▲</button>
+        <button class="btn" data-key="down" type="button">▼</button>
+        <button class="btn" data-key="right" type="button">▶</button>
+      </div>
+    </div>
+
+    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      Gathering scores. Bringing the whole flock through the gate scores far more — the reward rises with the square of how many you led home at once. Walking into your own flock ends the run.
+    </p>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>← ↑ ↓ →</dt><dd>Walk the shepherd</dd></div>
+        <div><dt>—</dt><dd>Touch the lost one to gather it</dd></div>
+        <div><dt>—</dt><dd>Reach the green gate to bring them all home</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section class="vs-card">
+      <p class="theirs">Answers: Rio Run (Snake)</p>
+      <p>Their cabinet is Snake, with a figure resembling the President running the Rio Grande and gathering up border crossers. The trail behind you is a tally of people collected. Growth is capture.</p>
+      <p>Ours keeps the trail and inverts the errand. You are a shepherd. The thing behind you is a flock, and you are responsible for every one of them until they are through the gate.</p>
+    </section>
+
+    <section>
+      <h2>THE ARGUMENT</h2>
+      <p>The oldest political image in the West is a shepherd, and it is not a flattering one for rulers. The shepherd is judged by whether the sheep get home — not by how many he rounded up, and not by how fast.</p>
+      <p>So this cabinet keeps score two ways. You get a little for finding someone. You get a great deal for leading them somewhere safe. And you can lose them: there is a wolf, and if you trample your own flock in your hurry, the run is over. That is the whole difference between a patrol and a pastorate.</p>
+      <div class="scripture">
+        &ldquo;What man of you, having a hundred sheep, if he has lost one of them, does not leave the ninety-nine in the wilderness, and go after the one which is lost, until he finds it?&rdquo;
+        <cite>Luke 15:4</cite>
+      </div>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="honest-scales.html">HONEST SCALES →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is an independent work of political satire and civic commentary, published by private citizens.
+      It is not affiliated with, endorsed by, or connected to the White House, the United States government,
+      or any agency, official, or campaign thereof. References to arcade.gov and its games are for criticism and comment.
+      Every game here is original work.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/ninety-nine.js"></script>
+</body>
+</html>
