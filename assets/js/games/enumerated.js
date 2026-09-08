@@ -9,99 +9,150 @@
   "use strict";
   var P = Arcade.P;
 
-  var W = 280, H = 260;
-  var GROUND = H - 26;
-  var GATE_W = 26;
+  var W = 300, H = 280;
+  var GROUND = H - 30;
+  var GATE_W = 28;
 
-  var STAGES = [
-    "COMMITTEE", "FLOOR DEBATE", "THE HOUSE", "THE SENATE",
-    "CONFERENCE", "THE PRESIDENT", "THE COURTS", "THE PEOPLE"
-  ];
+  var STAGES = ["COMMITTEE","DEBATE","THE HOUSE","THE SENATE","CONFERENCE","THE DESK","THE COURTS","THE PEOPLE"];
 
   var RIDERS = [
     "A BRIDGE IN NO ONE'S DISTRICT", "A CARVE-OUT FOR ONE FIRM",
-    "A MUSEUM OF THE SPONSOR", "A SUBSIDY WITH A NAME ON IT",
+    "A MUSEUM NAMED FOR THE SPONSOR", "A SUBSIDY WITH A NAME ON IT",
     "AN EXEMPTION FOR THE AUTHORS", "A GRANT TO A DONOR'S COUSIN"
   ];
 
-  var bird, gates, pickups, spawnT, scroll, pages, stage, toast, toastT, passed;
+  // Wings up and wings down. The white head and gold beak read at a glance,
+  // which matters when the bird is the only thing you are steering.
+  var EAGLE_UP = [
+    "..DD......",
+    ".DDDD.....",
+    "..DDDWWW..",
+    "...DWWWWYY",
+    "...BWWWKY.",
+    "..BBBBBB..",
+    "...BBBB...",
+    "....BB...."
+  ];
+  var EAGLE_DOWN = [
+    "......WWW.",
+    ".....WWWWY",
+    "....BWWWKY",
+    "...BBBBBB.",
+    "..BDBBBB..",
+    ".DDDBBB...",
+    ".DDD......",
+    "..D......."
+  ];
+  var EAGLE_KEY = { W: "#f4ead8", Y: "#d9a441", B: "#6b4226", D: "#4a2f1c", K: "#1a1a1a" };
 
-  function reset() {
-    bird = { x: 58, y: H / 2, v: 0, flap: 0 };
-    gates = []; pickups = [];
-    spawnT = 0; scroll = 76; pages = 6; stage = 0;
-    toast = ""; toastT = 0; passed = 0;
-    spawnGate(W + 40);
-  }
+  var GAVEL = [
+    ".GGGGG.",
+    "GGGGGGG",
+    ".GGGGG.",
+    "...HH..",
+    "...HH..",
+    "...HH.."
+  ];
+  var GAVEL_KEY = { G: "#ffcb6b", H: "#8a5a3b" };
 
-  // Heavier bills sink faster and take a bigger flap to lift. That is the whole argument.
+  var PORK = [
+    ".RRRRR.",
+    "RRRRRRR",
+    "RLRRRLR",
+    "RRRRRRR",
+    ".RRRRR.",
+    "..R.R.."
+  ];
+  var PORK_KEY = { R: "#b3313a", L: "#e8646d" };
+
+  var bird, gates, pickups, spawnT, scroll, pages, stageIdx, toast, toastT,
+      passed, clouds, farBg;
+
   function weight() { return 1 + (pages - 6) * 0.11; }
-  function billH()  { return Arcade.clamp(8 + pages * 1.5, 12, 44); }
+  function billH()  { return Arcade.clamp(7 + pages * 1.6, 11, 46); }
 
   function spawnGate(x) {
-    var gap = Arcade.clamp(96 - passed * 1.6, 62, 96);
-    var top = Arcade.randInt(26, GROUND - gap - 26);
-    gates.push({ x: x, top: top, gap: gap, scored: false, label: STAGES[stage % STAGES.length] });
-    stage++;
+    var gap = Arcade.clamp(102 - passed * 1.7, 66, 102);
+    var top = Arcade.randInt(24, GROUND - gap - 24);
+    gates.push({ x: x, top: top, gap: gap, scored: false, label: STAGES[stageIdx % STAGES.length] });
+    stageIdx++;
 
-    // Between gates: a clause you may strike, or an earmark you should dodge.
     var kind = Math.random() < 0.5 ? "strike" : "rider";
     pickups.push({
-      x: x + 74,
-      y: Arcade.randInt(32, GROUND - 32),
-      kind: kind,
-      taken: false,
+      x: x + 80, y: Arcade.randInt(30, GROUND - 34),
+      kind: kind, taken: false,
       text: kind === "rider" ? Arcade.pick(RIDERS) : "STRIKE A CLAUSE"
     });
   }
 
-  var game = Arcade.create({
+  Arcade.create({
     id: "enumerated",
     canvas: "#screen",
     width: W, height: H,
     title: "ENUMERATED",
-    subtitle: "Carry the bill through every gate that stands in its way.",
-    howto: "SPACE or UP to fly. Take the GAVELS to strike clauses. Dodge the PORK.",
-    verse: '"The powers delegated by the Constitution are few and defined." Federalist 45',
+    subtitle: "Carry the bill through every gate in its way.",
+    howto: "SPACE OR UP TO FLY - TAKE THE GAVELS - DODGE THE PORK",
+    verse: '"THE POWERS DELEGATED BY THE CONSTITUTION ARE FEW AND DEFINED" FEDERALIST 45',
     scoreLabel: "GATES PASSED",
-    moral: "Their bird carries the bill unopposed. Ours has to earn every gate — and the fewer pages it carries, the higher it flies.",
+    moral: "THEIR BIRD CARRIES THE BILL UNOPPOSED. OURS EARNS EVERY GATE, AND FLIES HIGHER THE LESS IT CARRIES.",
 
-    reset: reset,
+    reset: function () {
+      bird = { x: 62, y: H / 2, v: 0, flap: 0 };
+      gates = []; pickups = [];
+      spawnT = 0; scroll = 80; pages = 6; stageIdx = 0;
+      toast = ""; toastT = 0; passed = 0;
+      clouds = [];
+      for (var i = 0; i < 5; i++) {
+        clouds.push({ x: Arcade.rand(0, W), y: Arcade.rand(14, 70), s: Arcade.rand(0.3, 0.7), w: Arcade.randInt(16, 34) });
+      }
+      farBg = 0;
+      spawnGate(W + 40);
+    },
 
     update: function (g, dt) {
       var w = weight();
 
       if (g.pressed("action") || g.pressed("up")) {
-        bird.v = -128 / Math.sqrt(w);
+        bird.v = -132 / Math.sqrt(w);
         bird.flap = 0.16;
+        g.burst(bird.x + 2, bird.y + 8, "rgba(244,234,216,.5)", 3,
+                { speed: 26, angle: Math.PI * 0.75, spread: 0.8, gravity: 30, life: 0.35 });
       }
-      bird.v += 340 * w * dt;
+      bird.v += 350 * w * dt;
       bird.y += bird.v * dt;
       if (bird.flap > 0) bird.flap -= dt;
 
-      if (bird.y < 6) { bird.y = 6; bird.v = 0; }
+      if (bird.y < 4) { bird.y = 4; bird.v = 0; }
       if (bird.y + billH() > GROUND) {
+        g.kick(7); g.flash(P.crimson, 0.35);
         g.gameOver("The bill came down on the Mall. " + pages + " pages was too much to carry.");
         return;
       }
 
       if (toastT > 0) toastT -= dt;
-      scroll = 76 + passed * 1.4;
+      scroll = 80 + passed * 1.5;
+      farBg += scroll * dt * 0.12;
 
-      var i;
+      for (var i = 0; i < clouds.length; i++) {
+        clouds[i].x -= scroll * dt * clouds[i].s * 0.25;
+        if (clouds[i].x < -40) { clouds[i].x = W + 20; clouds[i].y = Arcade.rand(14, 70); }
+      }
+
       for (i = gates.length - 1; i >= 0; i--) {
         var gt = gates[i];
         gt.x -= scroll * dt;
-
         var bh = billH();
         var hitX = bird.x + 20 > gt.x && bird.x < gt.x + GATE_W;
         if (hitX && (bird.y < gt.top || bird.y + bh > gt.top + gt.gap)) {
+          g.kick(7); g.flash(P.crimson, 0.35);
           g.gameOver("Stopped at " + gt.label + ". A bill this size does not fit through.");
           return;
         }
         if (!gt.scored && gt.x + GATE_W < bird.x) {
-          gt.scored = true; passed++; g.score += 25 + Math.max(0, (12 - pages)) * 5;
-          toast = "PASSED " + gt.label; toastT = 1.6;
+          gt.scored = true; passed++;
+          g.score += 25 + Math.max(0, (12 - pages)) * 5;
+          toast = "PASSED " + gt.label; toastT = 1.8;
+          g.burst(gt.x + GATE_W, gt.top + gt.gap / 2, P.goldLite, 6, { speed: 50, gravity: 10 });
         }
         if (gt.x < -GATE_W) gates.splice(i, 1);
       }
@@ -110,18 +161,22 @@
         var pu = pickups[i];
         pu.x -= scroll * dt;
         if (!pu.taken &&
-            Math.abs((bird.x + 10) - pu.x) < 12 &&
-            Math.abs((bird.y + billH() / 2) - pu.y) < 14) {
+            Math.abs((bird.x + 10) - pu.x) < 13 &&
+            Math.abs((bird.y + billH() / 2) - pu.y) < 15) {
           pu.taken = true;
           if (pu.kind === "strike") {
             pages = Math.max(2, pages - 2);
             g.score += 40;
             toast = "CLAUSE STRUCK. " + pages + " PAGES.";
+            g.flash(P.gold, 0.2);
+            g.burst(pu.x, pu.y, P.goldLite, 12, { speed: 70 });
           } else {
             pages += 3;
             toast = "RIDER ATTACHED: " + pu.text;
+            g.kick(4); g.flash(P.crimson, 0.25);
+            g.burst(pu.x, pu.y, P.crimsonLite, 12, { speed: 70 });
           }
-          toastT = 2.2;
+          toastT = 2.4;
         }
         if (pu.x < -30) pickups.splice(i, 1);
       }
@@ -131,83 +186,161 @@
     },
 
     draw: function (g) {
-      // Sky over the Mall
-      g.clear("#101a33");
-      g.rect(0, 0, W, 90, "#16234a");
-      for (var s = 0; s < 26; s++) {
-        var sx = (s * 47) % W, sy = (s * 29) % 80;
-        g.rect(sx, sy, 1, 1, "rgba(244,234,216,.35)");
+      /* ---- sky ---- */
+      g.gradient(0, 0, W, GROUND, "#16234a", "#243a63", 8);
+      // stars fading near the top
+      for (var s = 0; s < 22; s++) {
+        var sx = (s * 71) % W, sy = (s * 37) % 60;
+        g.rect(sx, sy, 1, 1, "rgba(244,234,216,.22)");
       }
 
-      // Skyline: a dome and a monument, drawn plainly
-      var px = (g.time * 12) % 120;
-      g.rect(30 - px, 62, 44, 28, "#1b2749");
-      g.rect(44 - px, 46, 16, 18, "#1b2749");
-      g.rect(50 - px, 40, 4, 8, "#22315c");
-      g.rect(150 - px, 34, 10, 56, "#1b2749");
-      g.rect(210 - px, 66, 34, 24, "#1b2749");
+      /* ---- clouds ---- */
+      for (var i = 0; i < clouds.length; i++) {
+        var cl = clouds[i];
+        g.rect(cl.x, cl.y, cl.w, 4, "rgba(127,178,221,.10)");
+        g.rect(cl.x + 5, cl.y - 3, cl.w - 12, 3, "rgba(127,178,221,.10)");
+      }
 
-      // Ground
-      g.rect(0, GROUND, W, H - GROUND, "#1d2a1c");
+      /* ---- the Mall: dome, obelisk, memorial, in parallax ---- */
+      // Two parallax layers: a far ridge of rooftops, then the monuments.
+      var far = (farBg * 0.45) % 60;
+      for (var fb = -60; fb < W + 60; fb += 60) {
+        var fx = fb - far;
+        g.rect(fx, GROUND - 26, 24, 26, "#15203c");
+        g.rect(fx + 28, GROUND - 34, 16, 34, "#15203c");
+        g.rect(fx + 46, GROUND - 20, 12, 20, "#15203c");
+      }
+      var px = farBg % 220;
+      drawDome(g, 20 - px, 100);
+      drawObelisk(g, 132 - px, 46);
+      drawMemorial(g, 214 - px, 108);
+      drawDome(g, 240 - px, 100);
+      drawObelisk(g, 352 - px, 46);
+      drawMemorial(g, 434 - px, 108);
+
+      /* ---- ground: the Mall lawn and reflecting pool ---- */
+      g.rect(0, GROUND, W, H - GROUND, "#1b2a1c");
       g.rect(0, GROUND, W, 2, "#3d5a34");
-
-      // Gates
-      for (var i = 0; i < gates.length; i++) {
-        var gt = gates[i];
-        g.rect(gt.x, 0, GATE_W, gt.top, "#2a3560");
-        g.frameRect(gt.x, 0, GATE_W, gt.top, "rgba(217,164,65,.5)", 1);
-        var by = gt.top + gt.gap;
-        g.rect(gt.x, by, GATE_W, GROUND - by, "#2a3560");
-        g.frameRect(gt.x, by, GATE_W, GROUND - by, "rgba(217,164,65,.5)", 1);
-        // Fluting, so the gates read as columns
-        for (var f = 4; f < GATE_W - 3; f += 6) {
-          g.rect(gt.x + f, 2, 1, Math.max(0, gt.top - 4), "rgba(255,255,255,.06)");
-          g.rect(gt.x + f, by + 2, 1, Math.max(0, GROUND - by - 4), "rgba(255,255,255,.06)");
-        }
-        g.text(gt.label.slice(0, 9), gt.x + GATE_W / 2, Math.max(4, gt.top - 12), 5, P.gold, "center");
+      var lawn = Math.floor((g.wall * scroll * 0.4) % 16);
+      for (i = -16; i < W + 16; i += 16) {
+        g.rect(i - lawn, GROUND + 5, 8, 1, "rgba(61,90,52,.6)");
       }
 
-      // Pickups
+      /* ---- gates as marble columns ---- */
+      for (i = 0; i < gates.length; i++) {
+        var gt = gates[i];
+        drawColumn(g, gt.x, 0, gt.top, true);
+        drawColumn(g, gt.x, gt.top + gt.gap, GROUND - (gt.top + gt.gap), false);
+        // the gate's name on a plaque above the gap
+        var ly = Math.max(6, gt.top - 13);
+        var lw = g.textWidth(gt.label, 1) + 6;
+        g.rect(gt.x + GATE_W / 2 - lw / 2, ly - 2, lw, 11, "rgba(6,9,20,.8)");
+        g.frameRect(gt.x + GATE_W / 2 - lw / 2, ly - 2, lw, 11, "rgba(217,164,65,.6)", 1);
+        g.text(gt.label, gt.x + GATE_W / 2, ly + 1, 1, P.gold, "center");
+      }
+
+      /* ---- pickups ---- */
       for (i = 0; i < pickups.length; i++) {
         var pu = pickups[i];
         if (pu.taken) continue;
+        var bob = Math.round(Math.sin(g.wall * 4 + pu.x * 0.05) * 2);
         if (pu.kind === "strike") {
-          g.rect(pu.x - 6, pu.y - 3, 12, 5, P.goldLite);      // gavel head
-          g.rect(pu.x - 1, pu.y + 2, 3, 9, "#8a5a3b");        // handle
-          g.text("STRIKE", pu.x, pu.y - 14, 5, P.goldLite, "center");
+          g.ctx.globalAlpha = 0.28;
+          g.rect(pu.x - 9, pu.y - 8 + bob, 18, 16, P.goldLite);
+          g.ctx.globalAlpha = 1;
+          g.sprite(GAVEL, pu.x - 3, pu.y - 6 + bob, 1, GAVEL_KEY);
+          g.text("STRIKE", pu.x, pu.y - 18 + bob, 1, P.goldLite, "center");
         } else {
-          g.rect(pu.x - 7, pu.y - 6, 14, 12, P.crimson);
-          g.rect(pu.x - 5, pu.y - 4, 10, 8, "#d1616a");
-          g.text("PORK", pu.x, pu.y - 16, 5, P.crimson, "center");
+          g.sprite(PORK, pu.x - 3, pu.y - 6 + bob, 1, PORK_KEY);
+          g.text("PORK", pu.x, pu.y - 18 + bob, 1, P.crimsonLite, "center");
         }
       }
 
-      // Eagle carrying the bill
+      /* ---- the eagle and the bill it is carrying ---- */
       var bh = billH();
-      var flap = bird.flap > 0 ? -3 : 2;
-      g.rect(bird.x, bird.y, 18, 12, "#6b4226");             // body
-      g.rect(bird.x + 2, bird.y - 4, 10, 6, "#f4ead8");      // white head
-      g.rect(bird.x + 12, bird.y - 2, 4, 3, P.gold);         // beak
-      g.rect(bird.x + 3, bird.y - 3, 2, 2, "#1a1a1a");       // eye
-      g.rect(bird.x - 5, bird.y + flap, 10, 4, "#4a2f1c");   // wing
-      // the bill itself, growing with every rider it carries
-      g.rect(bird.x + 3, bird.y + 12, 13, bh, "#e6d8bd");
-      g.frameRect(bird.x + 3, bird.y + 12, 13, bh, "#8a7a5a", 1);
+      var art = bird.flap > 0 ? EAGLE_UP : EAGLE_DOWN;
+      // the bill hangs from the talons and grows with every rider
+      var bx = bird.x + 6, by = bird.y + 17;
+      g.rect(bx, by, 13, bh, "#e6d8bd");
+      g.rect(bx, by, 13, 1, "#fdf6e6");
+      g.frameRect(bx, by, 13, bh, "#8a7a5a", 1);
       for (var ln = 3; ln < bh - 2; ln += 4) {
-        g.rect(bird.x + 5, bird.y + 12 + ln, 9, 1, "rgba(90,80,60,.55)");
+        g.rect(bx + 2, by + ln, 9, 1, "rgba(90,80,60,.5)");
       }
+      if (pages > 10) g.rect(bx, by, 13, bh, "rgba(179,49,58,.12)");
+      g.rect(bx + 1, by - 2, 2, 3, "#8a5a3b");                   // talons
+      g.rect(bx + 10, by - 2, 2, 3, "#8a5a3b");
+      g.sprite(art, bird.x - 4, bird.y - 4, 2, EAGLE_KEY);
 
-      // HUD
-      g.rect(0, 0, W, 18, "rgba(4,6,13,.72)");
-      g.text("PAGES " + pages, 6, 5, 7, pages > 10 ? P.crimson : P.oliveLite);
-      g.text("GATES " + passed, W / 2, 5, 7, P.parchment, "center");
-      g.text(String(g.score), W - 6, 5, 7, P.goldLite, "right");
+      /* ---- HUD ---- */
+      g.rect(0, 0, W, 20, "rgba(4,6,13,.72)");
+      g.rect(0, 20, W, 1, "rgba(217,164,65,.3)");
+      g.text("PAGES", 8, 4, 1, P.dim);
+      g.text(String(pages), 8 + 38, 4, 1, pages > 10 ? P.crimsonLite : P.oliveLite);
+      // a little page-weight bar
+      var pw = Arcade.clamp(pages, 0, 24);
+      g.rect(8, 13, 48, 3, "#141c33");
+      g.rect(8, 13, Math.round(pw * 2), 3, pages > 10 ? P.crimson : P.olive);
 
+      g.text("GATES " + passed, W / 2, 6, 1, P.parchment, "center");
+      g.textShadow(String(g.score), W - 8, 5, 1, P.goldLite, "right");
+
+      /* ---- ticker ---- */
       if (toastT > 0) {
-        g.textBlock(toast, W / 2, GROUND + 6, W - 16, 6, P.parchment, "center");
+        g.ctx.globalAlpha = Math.min(1, toastT * 2);
+        var tc = toast.indexOf("RIDER") === 0 ? P.crimsonLite
+               : toast.indexOf("CLAUSE") === 0 ? P.goldLite : P.parchment;
+        g.textBlock(toast, W / 2, GROUND + 9, W - 16, 1, tc, "center");
+        g.ctx.globalAlpha = 1;
       } else {
-        g.text("A SHORT BILL FLIES HIGHER", W / 2, GROUND + 8, 6, "rgba(154,166,196,.6)", "center");
+        g.text("A SHORT BILL FLIES HIGHER", W / 2, GROUND + 12, 1, "rgba(139,151,184,.5)", "center");
       }
     }
   });
+
+  /* ---------- the Mall ---------- */
+
+  function drawDome(g, x, baseY) {
+    var c = "#1b2749", l = "#243358";
+    g.rect(x, baseY, 52, 34, c);
+    g.rect(x, baseY, 52, 1, l);
+    for (var i = 3; i < 52; i += 6) g.rect(x + i, baseY + 4, 2, 30, "rgba(255,255,255,.05)");
+    g.rect(x + 16, baseY - 16, 20, 16, c);
+    g.rect(x + 19, baseY - 22, 14, 6, c);
+    g.rect(x + 23, baseY - 27, 6, 5, c);
+    g.rect(x + 25, baseY - 31, 2, 4, "#d9a441");
+    g.rect(x + 16, baseY - 16, 20, 1, l);
+  }
+
+  function drawObelisk(g, x, topY) {
+    g.rect(x, topY, 11, 90, "#1b2749");
+    g.rect(x, topY, 1, 90, "#243358");
+    g.rect(x + 2, topY - 5, 7, 5, "#1b2749");
+    g.rect(x + 4, topY - 8, 3, 3, "#243358");
+    g.rect(x + 3, topY + 30, 5, 1, "rgba(179,49,58,.5)");   // aircraft light
+  }
+
+  function drawMemorial(g, x, baseY) {
+    g.rect(x, baseY, 40, 26, "#1b2749");
+    g.rect(x, baseY, 40, 1, "#243358");
+    g.rect(x - 3, baseY + 24, 46, 3, "#182240");
+    for (var i = 2; i < 40; i += 5) g.rect(x + i, baseY + 3, 2, 21, "rgba(255,255,255,.05)");
+  }
+
+  function drawColumn(g, x, y, h, capitalAtBottom) {
+    if (h <= 0) return;
+    g.rect(x, y, GATE_W, h, "#2a3560");
+    g.gradient(x, y, GATE_W, h, "#313e6e", "#232d54", 3);
+    // fluting
+    for (var f = 4; f < GATE_W - 3; f += 6) {
+      g.rect(x + f, y + 2, 1, Math.max(0, h - 4), "rgba(255,255,255,.07)");
+      g.rect(x + f + 1, y + 2, 1, Math.max(0, h - 4), "rgba(0,0,0,.14)");
+    }
+    g.frameRect(x, y, GATE_W, h, "rgba(217,164,65,.45)", 1);
+    // a capital at the end nearest the gap
+    var cy = capitalAtBottom ? y + h - 7 : y;
+    g.rect(x - 2, cy, GATE_W + 4, 7, "#3a4878");
+    g.rect(x - 2, cy, GATE_W + 4, 1, "#59689e");
+    g.frameRect(x - 2, cy, GATE_W + 4, 7, "rgba(217,164,65,.55)", 1);
+  }
 })();
