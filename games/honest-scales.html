@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HONEST SCALES — The Free Arcade</title>
+<meta name="description" content="Honest Scales — the same conveyor as Supply Line, but you are the merchant rather than the censor, and the only ground for refusal is a false label.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../index.html#ledger">The Ledger</a>
+      <a href="../about.html">Why We Built It</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>HONEST SCALES</span>
+        <span class="verse">Prov. 11:1</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="260" height="280" aria-label="HONEST SCALES game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">REFUSE</button>
+        <button class="btn" data-key="down" type="button">WEIGH</button>
+        <button class="btn" data-key="right" type="button">SELL</button>
+      </div>
+    </div>
+
+    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      Two ways to lose your good name: sell a crate whose label lies, or refuse a crate whose label is true. The second is punished as surely as the first. That is the point.
+    </p>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>↓ / S</dt><dd>Hold to weigh the crate while it is on the scale</dd></div>
+        <div><dt>→ / D</dt><dd>Sell it</dd></div>
+        <div><dt>← / A</dt><dd>Refuse it</dd></div>
+        <div><dt>—</dt><dd>Letting a crate pass unexamined costs you too</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section class="vs-card">
+      <p class="theirs">Answers: Supply Line (sorting)</p>
+      <p>Their cabinet puts you at a school-lunch conveyor, approving and rejecting food against a slogan — an administration's nutrition standard, rendered as a reflex test. The lesson underneath is that judging what other people may eat is a game.</p>
+      <p>Ours keeps the conveyor and the two-key sort exactly. It changes who you are and what you may refuse.</p>
+    </section>
+
+    <section>
+      <h2>THE ARGUMENT</h2>
+      <p>A free market is not a market without rules. It is a market whose one indispensable rule is that the label tells the truth. Fraud is not a market activity; it is the thing markets exist in spite of. This is why the oldest commercial law in the Hebrew Bible is not about what you may sell, but about the weights you sell it with.</p>
+      <p>And so the second half of the mechanic matters as much as the first. Refuse an honest supplier and you have not been careful; you have wronged a man who came to you in good faith and sent him home with nothing. A power to reject that answers to no standard beyond your own preference is not stewardship. It is just power.</p>
+      <div class="scripture">
+        &ldquo;A false balance is an abomination to the Lord, but a just weight is his delight.&rdquo;
+        <cite>Proverbs 11:1 · see also Deuteronomy 25:13–15</cite>
+      </div>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="enumerated.html">ENUMERATED →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is an independent work of political satire and civic commentary, published by private citizens.
+      It is not affiliated with, endorsed by, or connected to the White House, the United States government,
+      or any agency, official, or campaign thereof. References to arcade.gov and its games are for criticism and comment.
+      Every game here is original work.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/honest-scales.js"></script>
+</body>
+</html>

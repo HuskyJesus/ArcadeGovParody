@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIVING STONES — The Free Arcade</title>
+<meta name="description" content="Living Stones — the same falling blocks as Build the Wall, aimed at a roof instead of a rampart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../index.html#ledger">The Ledger</a>
+      <a href="../about.html">Why We Built It</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>LIVING STONES</span>
+        <span class="verse">Lev. 19:34</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="240" height="260" aria-label="LIVING STONES game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">◀</button>
+        <button class="btn" data-key="right" type="button">▶</button>
+        <button class="btn" data-key="up" type="button">ROTATE</button>
+        <button class="btn" data-key="down" type="button">DOWN</button>
+        <button class="btn" data-key="action" type="button">DROP</button>
+      </div>
+    </div>
+
+    <p style="margin-top:18px; font-size:16px; color:var(--muted)">
+      Every completed row is one household taken in — named, not counted. Four rows at once is a whole tenement raised, and the game pays you accordingly.
+    </p>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>← →</dt><dd>Move the stone left and right</dd></div>
+        <div><dt>↑ / W</dt><dd>Turn it</dd></div>
+        <div><dt>↓ / S</dt><dd>Bring it down faster</dd></div>
+        <div><dt>SPACE</dt><dd>Set it down where the outline shows</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section class="vs-card">
+      <p class="theirs">Answers: Build the Wall (Tetris)</p>
+      <p>Their cabinet turns Tetris into a border wall and calls the people on the far side of it <em>the coming horde</em> — a rising quantity to be held back, and never a face.</p>
+      <p>Ours keeps the skill exactly: fit awkward shapes together under time pressure. It only changes what you are building and who is on the other side of it.</p>
+    </section>
+
+    <section>
+      <h2>THE ARGUMENT</h2>
+      <p>There is nothing wrong with a nation having a border, and nothing wrong with a law that says who may cross it. Every serious tradition, ours included, takes that for granted.</p>
+      <p>What is wrong is the picture. Teach a child that the people beyond the wall are an undifferentiated mass, and you have taught them the one thing Scripture spends four books arguing against: that a person can be a statistic. Every stone in this cabinet is a stone in someone's house — because that is what stones are for, and because a nation that only knows how to build barriers eventually forgets how to build anything else.</p>
+      <div class="scripture">
+        &ldquo;The stranger who sojourns with you shall be to you as the native among you, and you shall love him as yourself; for you were strangers in the land of Egypt.&rdquo;
+        <cite>Leviticus 19:34</cite>
+      </div>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="ninety-nine.html">THE NINETY-NINE →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is an independent work of political satire and civic commentary, published by private citizens.
+      It is not affiliated with, endorsed by, or connected to the White House, the United States government,
+      or any agency, official, or campaign thereof. References to arcade.gov and its games are for criticism and comment.
+      Every game here is original work.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/living-stones.js"></script>
+</body>
+</html>
