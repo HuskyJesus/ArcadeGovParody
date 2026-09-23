@@ -1,10 +1,8 @@
 /* ============================================================
-   TEN TALENTS  —  counters "Trump Savings Tycoon" (coin catcher)
-   Same basket, same falling money. Opposite lesson: the money
-   is not handed to you by a government account with your
-   patron's name on it. You earn it, and then you must decide
-   what it is for - because a subsidy always comes with strings,
-   and every string narrows what you are free to do.
+   NO STRINGS ATTACHED
+   Catch what you earn. Split it however you like. The red
+   crates are free money and they are genuinely free money,
+   right up until you notice the strings shrinking your basket.
    ============================================================ */
 (function () {
   "use strict";
@@ -15,8 +13,9 @@
   var ROUND = 90;
 
   var GIFTS = [
-    "A NEIGHBOUR'S ROOF", "A WIDOW'S RENT", "AN APPRENTICE'S TOOLS",
-    "A SICK MAN'S DOCTOR", "A STRANGER'S FARE", "A CHILD'S SCHOOLING"
+    "SOMEBODY'S ROOF", "THE RENT, THIS MONTH", "A KID'S BUS FARE",
+    "A NEW SET OF TOOLS", "SOMEBODY'S VET BILL", "A LOAN NOBODY WROTE DOWN",
+    "THE TAB, QUIETLY", "A GUY NAMED DAVE'S TRUCK"
   ];
 
   var SUBSIDY = [
@@ -56,15 +55,15 @@
   }
 
   Arcade.create({
-    id: "ten-talents",
+    id: "no-strings",
     canvas: "#screen",
     width: W, height: H,
-    title: "TEN TALENTS",
-    subtitle: "It is not what you catch. It is what it is for.",
-    howto: "LEFT RIGHT TO WORK - SPACE PICKS A SLICE - UP DOWN MOVES IT - DODGE THE SUBSIDY",
-    verse: '"WELL DONE, GOOD AND FAITHFUL SERVANT; YOU WERE FAITHFUL OVER A LITTLE" MATT. 25:21',
-    scoreLabel: "THE ESTATE",
-    moral: "THEIR GAME FILLS AN ACCOUNT THE STATE OPENED FOR YOUR CHILD. THIS ONE ASKS WHAT A FREE MAN DOES WITH HIS OWN.",
+    title: "NO STRINGS ATTACHED",
+    subtitle: "Free money. Read the fine print.",
+    howto: "LEFT RIGHT TO WORK - SPACE PICKS A SLICE - UP DOWN MOVES IT - DODGE THE RED ONES",
+    verse: "THE RED CRATES ARE REAL MONEY. THEY ARE ALSO REAL STRINGS.",
+    scoreLabel: "NET WORTH",
+    moral: "NOBODY PUT THEIR NAME ON YOUR ACCOUNT. THAT WAS THE WHOLE PRIZE.",
 
     reset: function () {
       basket = { x: W / 2 };
@@ -78,8 +77,8 @@
     update: function (g, dt) {
       if (g.time > ROUND) {
         g.score = Math.round(invest + keep + neighbors * 55);
-        g.gameOver("Invested " + Math.round(invest) + ", kept " + Math.round(keep) +
-                   ", and " + neighbors + " neighbours who would do the same for you.");
+        g.gameOver("Grew " + Math.round(invest) + ", kept " + Math.round(keep) +
+                   ", and " + neighbors + (neighbors === 1 ? " person owes you one." : " people owe you one."));
         return;
       }
 
@@ -108,13 +107,13 @@
           coins.splice(i, 1);
           if (c.kind === "subsidy") {
             strings++; subsidiesTaken++; keep += 120;
-            toast = "SUBSIDY TAKEN. +120, AND A STRING. YOUR BASKET IS SMALLER NOW.";
+            toast = "+120. AND ONE STRING. YOUR BASKET JUST GOT SMALLER.";
             toastT = 3.2;
             g.kick(6); g.flash(P.crimson, 0.35);
             g.burst(c.x, FLOOR - 8, P.crimsonLite, 14, { speed: 80, lift: 26 });
           } else if (c.kind === "gift") {
             neighbors++;
-            toast = "A NEIGHBOUR REPAID A KINDNESS.";
+            toast = "SOMEBODY PAID YOU BACK.";
             toastT = 2.2;
             g.flash(P.olive, 0.2);
             g.burst(c.x, FLOOR - 8, P.oliveLite, 12, { speed: 66, lift: 22 });
@@ -181,7 +180,7 @@
           // label only while the crate is in the play field: behind the HUD
           // above, and past the basket below, it would cross other text
           if (c.y + 10 > 62 && c.y + 17 < FLOOR - 6) {
-            g.text("STRINGS", c.x, c.y + 10, 1, P.crimsonLite, "center");
+            g.text("FREE*", c.x, c.y + 10, 1, P.crimsonLite, "center");
           }
         } else if (c.kind === "gift") {
           g.sprite(GIFT, c.x - 7, c.y - 7, 2, GIFT_KEY);
@@ -216,7 +215,7 @@
              above the fold and emerge from behind the panel ---- */
       g.rect(0, 0, W, 62, "#070c18");
       g.rect(0, 62, W, 1, "rgba(217,164,65,.3)");
-      g.textShadow("TEN TALENTS", 8, 5, 2, P.goldLite);
+      g.textShadow("NO STRINGS", 8, 5, 2, P.goldLite);
 
       var left = Math.max(0, Math.ceil(ROUND - g.time));
       var urgent = left < 15;
@@ -224,17 +223,17 @@
       g.textShadow(String(left), W - 8, 4, 2, urgent && Math.floor(g.wall * 4) % 2 === 0 ? P.crimsonLite
                    : urgent ? P.crimson : P.parchment, "right");
 
-      g.text("ESTATE", 8, 24, 1, P.dim);
+      g.text("WORTH", 8, 24, 1, P.dim);
       g.textShadow(String(Math.round(invest + keep + neighbors * 55)), 8 + 44, 23, 1,
                    lastEarn > 0 ? P.white : P.oliveLite);
       if (strings) {
         g.text("STRINGS " + strings, W - 8, 25, 1, P.crimsonLite, "right");
       } else {
-        g.text("NO STRINGS", W - 8, 25, 1, P.dimmer, "right");
+        g.text("NO STRINGS", W - 8, 25, 1, P.oliveLite, "right");
       }
 
       // the split, three slices you steer while you work
-      var labels = ["GIVE", "INVEST", "KEEP"];
+      var labels = ["GIVE", "GROW", "KEEP"];
       var colors = [P.oliveLite, P.goldLite, P.sky];
       for (var i = 0; i < 3; i++) {
         var bx = 8 + i * 96, bw2 = 88;
@@ -265,9 +264,9 @@
       var ly = H - 30;
       g.rect(8, ly - 5, W - 16, 1, "rgba(217,164,65,.22)");
       g.text("GIVEN " + Math.round(give), 8, ly, 1, P.oliveLite);
-      g.text("INVESTED " + Math.round(invest), 8, ly + 11, 1, P.goldLite);
+      g.text("GROWN " + Math.round(invest), 8, ly + 11, 1, P.goldLite);
       g.text("KEPT " + Math.round(keep), 8 + 118, ly, 1, P.sky);
-      g.text("NEIGHBOURS " + neighbors, 8 + 118, ly + 11, 1, neighbors ? P.oliveLite : P.dimmer);
+      g.text("OWE YOU " + neighbors, 8 + 118, ly + 11, 1, neighbors ? P.oliveLite : P.dimmer);
       if (subsidiesTaken) {
         g.text("STRINGS " + strings, W - 8, ly + 11, 1, P.crimsonLite, "right");
       }
@@ -282,7 +281,7 @@
     keep += amount * split[2] / 100;
     if (give >= (neighbors + 1) * 90) {
       neighbors++;
-      toast = "YOU PAID FOR " + Arcade.pick(GIFTS) + ".";
+      toast = "YOU COVERED " + Arcade.pick(GIFTS) + ".";
       toastT = 2.6;
     }
   }

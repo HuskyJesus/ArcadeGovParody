@@ -1,8 +1,8 @@
 /* ============================================================
-   LIVING STONES  —  counters "Build the Wall" (Tetris)
-   Same falling-block fitting. Opposite purpose: the stones are
-   timber and brick, and a completed row is a family housed.
-   Nothing is walled out; something is raised up.
+   BUILD THE BRIDGE
+   Falling girders over a river. Complete a course and it
+   becomes a span, and whoever was waiting on the far bank
+   walks across it.
    ============================================================ */
 (function () {
   "use strict";
@@ -36,21 +36,24 @@
   };
   var KINDS = ["I","O","T","S","Z","J","L"];
 
-  var HOUSEHOLDS = [
-    "THE RUIZ FAMILY", "A WIDOW, AGE 81", "THREE ORPHANS",
-    "A NIGHT NURSE", "A DAY LABOURER", "THE OKONKWO FAMILY",
-    "A REFUGEE COUPLE", "A VETERAN", "THE NGUYEN FAMILY",
-    "A SINGLE FATHER", "A FARMHAND", "THE HALEVI FAMILY"
+  // Whoever happens to be waiting when a span goes in.
+  var CROSSERS = [
+    "THE RUIZ FAMILY", "A GUY NAMED DAVE", "SOMEBODY'S GRANDMA",
+    "A BUSLOAD OF NUNS", "TWO GOATS AND A CART", "THE NGUYEN FAMILY",
+    "A NIGHT NURSE", "A WEDDING PARTY", "ELEVEN CYCLISTS",
+    "A MAN WITH A PIANO", "THE OKONKWO FAMILY", "A LOST TOUR GROUP",
+    "A KID ON A SCOOTER", "SOMEONE RUNNING LATE"
   ];
 
-  var HOUSE = [
-    "..###..",
-    ".#####.",
-    "#######",
-    "#.###.#",
-    "#.#.#.#",
-    "#.###.#",
-    "#.....#"
+  // A little walker for the tally strip along the bottom.
+  var WALKER = [
+    ".##.",
+    ".##.",
+    "####",
+    "##.#",
+    "##.#",
+    "#..#",
+    "#..#"
   ];
 
   var board, piece, nextKind, dropTimer, dropSpeed, housed, lastHousehold,
@@ -88,7 +91,7 @@
   function lock(g) {
     for (var i = 0; i < piece.cells.length; i++) {
       var x = piece.cells[i][0] + piece.x, y = piece.cells[i][1] + piece.y;
-      if (y < 0) { g.gameOver("The site is full to the rafters. Rest, and start again."); return; }
+      if (y < 0) { g.gameOver("Girders stacked to the sky. The river won."); return; }
       board[y][x] = piece.kind;
       g.burst(BX + x * CELL + CELL / 2, BY + y * CELL + CELL / 2,
               MAT[piece.kind].lite, 3, { speed: 26, life: 0.32, gravity: 60 });
@@ -98,7 +101,11 @@
     piece = spawn(nextKind);
     nextKind = Arcade.pick(KINDS);
     if (occupied(piece.cells, piece.x, piece.y)) {
-      g.gameOver("The site is full to the rafters. Rest, and start again.");
+      g.gameOver(Arcade.pick([
+        "Girders stacked to the sky. The river won.",
+        "Ran out of deck. Everyone is still on the far bank.",
+        "The site is jammed solid. Nobody is crossing today."
+      ]));
     }
   }
 
@@ -122,7 +129,7 @@
     if (!cleared) return;
     housed += cleared;
     g.score += [0, 100, 260, 460, 800][cleared];
-    lastHousehold = Arcade.pick(HOUSEHOLDS);
+    lastHousehold = Arcade.pick(CROSSERS);
     toastT = 2.4;
     clearAnim = 0.5;
     g.kick(cleared >= 3 ? 6 : 3);
@@ -131,15 +138,15 @@
   }
 
   Arcade.create({
-    id: "living-stones",
+    id: "build-the-bridge",
     canvas: "#screen",
     width: W, height: H,
-    title: "LIVING STONES",
-    subtitle: "Build a house, not a barrier.",
+    title: "BUILD THE BRIDGE",
+    subtitle: "Everybody gets across.",
     howto: "LEFT RIGHT MOVE - UP TURN - DOWN HURRY - SPACE DROP",
-    verse: '"THE STRANGER WHO SOJOURNS WITH YOU SHALL BE AS THE NATIVE AMONG YOU" LEV. 19:34',
-    scoreLabel: "SHELTER RAISED",
-    moral: "A WALL COUNTS WHO IS KEPT OUT. A HOUSE COUNTS WHO IS TAKEN IN.",
+    verse: "FILL A ROW AND IT BECOMES A SPAN. SOMEBODY IS ALREADY WAITING ON IT.",
+    scoreLabel: "SPAN BUILT",
+    moral: "THE QUEUE ON THE FAR BANK DID NOT GET ANY SHORTER.",
 
     reset: function () {
       board = emptyBoard();
@@ -210,22 +217,31 @@
       g.gradient(0, 46, W, H - 46, "#0a1120", "#070b16", 4);
 
       /* ---- title bar ---- */
-      g.textShadow("LIVING STONES", 10, 10, 2, P.goldLite);
-      g.text("BUILD A HOUSE, NOT A BARRIER", 10, 30, 1, P.dim);
+      g.textShadow("BUILD THE BRIDGE", 10, 10, 2, P.goldLite);
+      g.text("EVERYBODY GETS ACROSS", 10, 30, 1, P.dim);
 
-      /* ---- the site: a foundation the board rests on ---- */
-      g.rect(BX - 4, BY - 3, BW + 8, BH + 8, "#0c1322");
+      /* ---- the crossing: water between two banks ---- */
+      g.rect(BX - 4, BY - 3, BW + 8, BH + 8, "#081020");
       g.frameRect(BX - 4, BY - 3, BW + 8, BH + 8, "rgba(217,164,65,.4)", 1);
-      g.rect(BX - 4, BY + BH + 5, BW + 8, 3, "#2a3560");         // the ground it stands on
 
-      // faint grid, so shapes read against the well
-      for (var r = 0; r < ROWS; r++) {
-        for (var c = 0; c < COLS; c++) {
-          if ((r + c) % 2 === 0) g.rect(BX + c * CELL, BY + r * CELL, CELL, CELL, "#0d1526");
+      // the river itself, drifting under whatever you have built
+      var r, c;
+      for (r = 0; r < ROWS; r++) {
+        for (c = 0; c < COLS; c++) {
+          g.rect(BX + c * CELL, BY + r * CELL, CELL, CELL, (r + c) % 2 === 0 ? "#0b1830" : "#0a1528");
         }
       }
-      // scaffolding uprights
-      for (r = 0; r <= ROWS; r += 6) g.rect(BX, BY + r * CELL, BW, 1, "rgba(127,178,221,.07)");
+      for (r = 2; r < ROWS; r += 3) {
+        var drift = Math.sin(g.wall * 1.2 + r) * 5;
+        g.rect(BX + 6 + drift, BY + r * CELL + 5, 14, 1, "rgba(127,178,221,.16)");
+        g.rect(BX + 44 - drift, BY + r * CELL + 9, 20, 1, "rgba(127,178,221,.12)");
+        g.rect(BX + 88 + drift, BY + r * CELL + 3, 12, 1, "rgba(127,178,221,.14)");
+      }
+
+      // the banks, and the queue still waiting on the far one
+      g.rect(BX - 4, BY - 3, 3, BH + 8, "#3a4664");
+      g.rect(BX + BW + 1, BY - 3, 3, BH + 8, "#3a4664");
+      g.rect(BX - 4, BY + BH + 5, BW + 8, 3, "#2a3560");
 
       /* ---- settled stones ---- */
       for (r = 0; r < ROWS; r++) {
@@ -263,7 +279,7 @@
       }
 
       g.panel(px, BY + 62, pw, 44, "#111a2e", "rgba(217,164,65,.35)");
-      g.text("SHELTER", px + 6, BY + 68, 1, P.dim);
+      g.text("SPANS", px + 6, BY + 68, 1, P.dim);
       g.textShadow(String(g.score), px + 6, BY + 80, 2, P.goldLite);
 
       g.panel(px, BY + 112, pw, 34, "#111a2e", "rgba(217,164,65,.35)");
@@ -275,27 +291,27 @@
         var a = Math.min(1, toastT * 2);
         g.ctx.globalAlpha = a;
         g.panel(px, BY + 152, pw, 54, "rgba(79,125,90,.30)", P.oliveLite);
-        g.text("HOUSED", px + 6, BY + 158, 1, P.oliveLite);
+        g.text("CROSSED", px + 6, BY + 158, 1, P.oliveLite);
         g.textBlock(lastHousehold, px + 6, BY + 172, pw - 12, 1, P.parchment);
         g.ctx.globalAlpha = 1;
       } else {
         g.panel(px, BY + 152, pw, 54, "rgba(28,39,72,.35)", "rgba(217,164,65,.18)");
-        g.textBlock("CLEAR A ROW TO TAKE A HOUSEHOLD IN", px + 6, BY + 158, pw - 12, 1, P.dimmer);
+        g.textBlock("FILL A ROW TO LAY A SPAN", px + 6, BY + 158, pw - 12, 1, P.dimmer);
       }
 
       /* ---- the street below: one house per household ---- */
       var sy = BY + BH + 6;                       // 268; screen is 288 tall
-      g.text("HOUSED", 10, sy, 1, P.dim);
+      g.text("CROSSED", 10, sy, 1, P.dim);
       if (!housed) {
-        g.text("NOBODY YET", 52, sy, 1, P.dimmer);
+        g.text("NOBODY YET", 58, sy, 1, P.dimmer);
       }
-      var shown = Math.min(housed, 19);
+      var shown = Math.min(housed, 28);
       for (i = 0; i < shown; i++) {
-        var hx = 10 + i * 12;
+        var hx = 10 + i * 8;
         var pop = clearAnim > 0 && i >= housed - 4 ? 1 : 0;
-        g.sprite(HOUSE, hx, sy + 11 - pop, 1, { "#": i % 3 === 0 ? P.gold : P.oliveLite });
+        g.sprite(WALKER, hx, sy + 11 - pop, 1, { "#": i % 3 === 0 ? P.gold : P.oliveLite });
       }
-      if (housed > 19) g.text("+" + (housed - 19), 10 + 19 * 12, sy + 13, 1, P.gold);
+      if (housed > 28) g.text("+" + (housed - 28), 10 + 28 * 8, sy + 13, 1, P.gold);
     }
   });
 

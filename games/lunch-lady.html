@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUNCH LADY — The Free Arcade</title>
+<meta name="description" content="LUNCH LADY: Nobody eats last.">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>LUNCH LADY</span>
+        <span class="verse">03</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="288" height="300" aria-label="LUNCH LADY game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="control-panel">
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">BIN IT</button>
+        <button class="btn" data-key="down" type="button">LID</button>
+        <button class="btn" data-key="right" type="button">SERVE</button>
+      </div>
+      </div>
+      <p class="cab-hint">
+      Every tray arrives with an inspector's stamp. The stamp is right about half the time. The lid is right every time. Bin a tray that was fine and a kid gets nothing.
+      </p>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>↓ / S</dt><dd>Hold to lift the lid</dd></div>
+        <div><dt>→ / D</dt><dd>Serve it</dd></div>
+        <div><dt>← / A</dt><dd>Bin it</dd></div>
+        <div><dt>—</dt><dd>A tray that goes past untouched is an empty tray</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <h2>TODAY'S MENU</h2>
+      <p>Pizza. Tacos. Sloppy joes. Nuggets. Chili. A salad nobody asked for.</p><p>The clipboard has opinions about all of it. The kids have forty minutes.</p>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="bill-becomes-law.html">HOW A BILL BECOMES LAW →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is satire. It is not a government website, carries no seal, takes no public money,
+      and is not affiliated with or endorsed by any government, agency, official, or campaign.
+      All games, art and text are original.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/pixelfont.js"></script>
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/lunch-lady.js"></script>
+</body>
+</html>
