@@ -1,9 +1,8 @@
 /* ============================================================
-   ENUMERATED  —  counters "Flappy Bill" (Flappy Bird)
-   Same eagle, same bill, same tap-to-fly. Opposite premise:
-   the bill does not simply sail down the Mall to applause.
-   It must fit through the gates. Earmarks make it heavy.
-   Striking clauses makes it light. Small bills fly.
+   HOW A BILL BECOMES LAW
+   Flappy, but the bill has to survive the whole process.
+   Every column is a stage that can kill it. Pork makes it
+   heavier. Amendments trim it. Most bills do not make it.
    ============================================================ */
 (function () {
   "use strict";
@@ -13,12 +12,16 @@
   var GROUND = H - 30;
   var GATE_W = 28;
 
-  var STAGES = ["COMMITTEE","DEBATE","THE HOUSE","THE SENATE","CONFERENCE","THE DESK","THE COURTS","THE PEOPLE"];
+  var STAGES = [
+    "SUBCOMMITTEE", "MARKUP", "A HOLD", "THE RULES CTTE", "CLOTURE",
+    "FLOOR VOTE", "THE OTHER GUYS", "RECESS", "CONFERENCE", "THE VETO PEN"
+  ];
 
   var RIDERS = [
-    "A BRIDGE IN NO ONE'S DISTRICT", "A CARVE-OUT FOR ONE FIRM",
-    "A MUSEUM NAMED FOR THE SPONSOR", "A SUBSIDY WITH A NAME ON IT",
-    "AN EXEMPTION FOR THE AUTHORS", "A GRANT TO A DONOR'S COUSIN"
+    "A BRIDGE TO NOBODY'S DISTRICT", "A CARVE-OUT FOR ONE GUY",
+    "A MUSEUM NAMED AFTER THE SPONSOR", "A CATFISH INSPECTION OFFICE",
+    "AN EXEMPTION FOR WHOEVER WROTE IT", "$4M FOR A DONOR'S COUSIN",
+    "A NATIONAL ASPARAGUS STRATEGY", "SOMETHING ABOUT WATER RIGHTS"
   ];
 
   // Wings up and wings down. The white head and gold beak read at a glance,
@@ -86,15 +89,15 @@
   }
 
   Arcade.create({
-    id: "enumerated",
+    id: "bill-becomes-law",
     canvas: "#screen",
     width: W, height: H,
-    title: "ENUMERATED",
-    subtitle: "Carry the bill through every gate in its way.",
-    howto: "SPACE OR UP TO FLY - TAKE THE GAVELS - DODGE THE PORK",
-    verse: '"THE POWERS DELEGATED BY THE CONSTITUTION ARE FEW AND DEFINED" FEDERALIST 45',
-    scoreLabel: "GATES PASSED",
-    moral: "THEIR BIRD CARRIES THE BILL UNOPPOSED. OURS EARNS EVERY GATE, AND FLIES HIGHER THE LESS IT CARRIES.",
+    title: "HOW A BILL BECOMES LAW",
+    subtitle: "Spoiler: it usually doesn't.",
+    howto: "SPACE OR UP TO FLY - GRAB THE GAVELS - DODGE THE PORK",
+    verse: "EVERY PAGE YOU PICK UP MAKES IT HEAVIER. THAT IS THE JOKE.",
+    scoreLabel: "STAGES SURVIVED",
+    moral: "IT DIED IN COMMITTEE. IT ALWAYS DIES IN COMMITTEE.",
 
     reset: function () {
       bird = { x: 62, y: H / 2, v: 0, flap: 0 };
@@ -125,7 +128,11 @@
       if (bird.y < 4) { bird.y = 4; bird.v = 0; }
       if (bird.y + billH() > GROUND) {
         g.kick(7); g.flash(P.crimson, 0.35);
-        g.gameOver("The bill came down on the Mall. " + pages + " pages was too much to carry.");
+        g.gameOver(Arcade.pick([
+          "Too heavy. " + pages + " pages hit the Mall at speed.",
+          "It came down somewhere near the reflecting pool.",
+          "Nobody read it. Nobody caught it either."
+        ]));
         return;
       }
 
@@ -145,13 +152,17 @@
         var hitX = bird.x + 20 > gt.x && bird.x < gt.x + GATE_W;
         if (hitX && (bird.y < gt.top || bird.y + bh > gt.top + gt.gap)) {
           g.kick(7); g.flash(P.crimson, 0.35);
-          g.gameOver("Stopped at " + gt.label + ". A bill this size does not fit through.");
+          g.gameOver(Arcade.pick([
+            "Died in " + gt.label + ".",
+            "Held up in " + gt.label + ". Indefinitely.",
+            gt.label + " will take it up next session. They will not."
+          ]));
           return;
         }
         if (!gt.scored && gt.x + GATE_W < bird.x) {
           gt.scored = true; passed++;
           g.score += 25 + Math.max(0, (12 - pages)) * 5;
-          toast = "PASSED " + gt.label; toastT = 1.8;
+          toast = "CLEARED " + gt.label; toastT = 1.8;
           g.burst(gt.x + GATE_W, gt.top + gt.gap / 2, P.goldLite, 6, { speed: 50, gravity: 10 });
         }
         if (gt.x < -GATE_W) gates.splice(i, 1);
@@ -167,12 +178,12 @@
           if (pu.kind === "strike") {
             pages = Math.max(2, pages - 2);
             g.score += 40;
-            toast = "CLAUSE STRUCK. " + pages + " PAGES.";
+            toast = "AMENDED DOWN TO " + pages + " PAGES.";
             g.flash(P.gold, 0.2);
             g.burst(pu.x, pu.y, P.goldLite, 12, { speed: 70 });
           } else {
             pages += 3;
-            toast = "RIDER ATTACHED: " + pu.text;
+            toast = "RIDER: " + pu.text;
             g.kick(4); g.flash(P.crimson, 0.25);
             g.burst(pu.x, pu.y, P.crimsonLite, 12, { speed: 70 });
           }
@@ -249,7 +260,7 @@
           g.rect(pu.x - 9, pu.y - 8 + bob, 18, 16, P.goldLite);
           g.ctx.globalAlpha = 1;
           g.sprite(GAVEL, pu.x - 3, pu.y - 6 + bob, 1, GAVEL_KEY);
-          g.text("STRIKE", pu.x, pu.y - 18 + bob, 1, P.goldLite, "center");
+          g.text("AMEND", pu.x, pu.y - 18 + bob, 1, P.goldLite, "center");
         } else {
           g.sprite(PORK, pu.x - 3, pu.y - 6 + bob, 1, PORK_KEY);
           g.text("PORK", pu.x, pu.y - 18 + bob, 1, P.crimsonLite, "center");
@@ -282,7 +293,7 @@
       g.rect(8, 13, 48, 3, "#141c33");
       g.rect(8, 13, Math.round(pw * 2), 3, pages > 10 ? P.crimson : P.olive);
 
-      g.text("GATES " + passed, W / 2, 6, 1, P.parchment, "center");
+      g.text("STAGE " + passed, W / 2, 6, 1, P.parchment, "center");
       g.textShadow(String(g.score), W - 8, 5, 1, P.goldLite, "right");
 
       /* ---- ticker ---- */
@@ -293,7 +304,7 @@
         g.textBlock(toast, W / 2, GROUND + 9, W - 16, 1, tc, "center");
         g.ctx.globalAlpha = 1;
       } else {
-        g.text("A SHORT BILL FLIES HIGHER", W / 2, GROUND + 12, 1, "rgba(139,151,184,.5)", "center");
+        g.text("A SHORTER BILL FLIES HIGHER", W / 2, GROUND + 12, 1, "rgba(139,151,184,.5)", "center");
       }
     }
   });

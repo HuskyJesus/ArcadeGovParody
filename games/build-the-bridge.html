@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BUILD THE BRIDGE — The Free Arcade</title>
+<meta name="description" content="BUILD THE BRIDGE: Everybody gets across.">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>BUILD THE BRIDGE</span>
+        <span class="verse">01</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="264" height="288" aria-label="BUILD THE BRIDGE game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="control-panel">
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">◀</button>
+        <button class="btn" data-key="right" type="button">▶</button>
+        <button class="btn" data-key="up" type="button">TURN</button>
+        <button class="btn" data-key="down" type="button">DOWN</button>
+        <button class="btn" data-key="action" type="button">DROP</button>
+      </div>
+      </div>
+      <p class="cab-hint">
+      Fill a row and it becomes a span. Whoever was waiting on the far bank walks straight across it. Four rows at once is a whole lane of traffic.
+      </p>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>← →</dt><dd>Move the girder</dd></div>
+        <div><dt>↑ / W</dt><dd>Turn it</dd></div>
+        <div><dt>↓ / S</dt><dd>Hurry it down</dd></div>
+        <div><dt>SPACE</dt><dd>Drop it</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <h2>TODAY'S CROSSINGS</h2>
+      <p>A guy named Dave. Somebody's grandma. A busload of nuns. Two goats and a cart.</p><p>They are all waiting. The river is not going anywhere. Neither are they, until you finish the deck.</p>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="welcome-wagon.html">WELCOME WAGON →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is satire. It is not a government website, carries no seal, takes no public money,
+      and is not affiliated with or endorsed by any government, agency, official, or campaign.
+      All games, art and text are original.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/pixelfont.js"></script>
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/build-the-bridge.js"></script>
+</body>
+</html>

@@ -42,53 +42,49 @@
     }
   }
 
-  /* ---- Living Stones: blocks fall and a row lights up ---- */
-  function livingStones(ctx, t) {
+  /* ---- Build the Bridge: girders close the gap, somebody walks across ---- */
+  function buildTheBridge(ctx, t) {
     px(ctx, 0, 0, CW, CH, C.night);
     stars(ctx, t, 12, 30);
-    var loop = t % 4.2;
-    var drop = Math.min(34, loop * 22);
-    var settled = loop > 1.9;
+    var loop = t % 4.6;
+    var settled = loop > 1.7;
+    var deckY = 50;
 
-    var baseY = 56;
-    var rows = [
-      [1,1,1,1,1,1,0,0],
-      [1,1,1,1,1,1,1,1]
-    ];
-    // the roof, drawn over the course as soon as it completes
-    if (settled) {
-      for (var k = 0; k <= 12; k++) {
-        var a = 1 - Math.min(1, (loop - 1.9) * 2.2);
-        var col = "rgba(255,203,107," + (0.75 - a * 0.5) + ")";
-        px(ctx, 60 - k * 3, baseY - 4 - k, 3, 1, col);
-        px(ctx, 60 + k * 3, baseY - 4 - k, 3, 1, col);
-      }
-      px(ctx, 58, baseY - 18, 5, 3, C.goldLite);
+    // the river, drifting
+    px(ctx, 0, 60, CW, 18, "#0b1830");
+    for (var w = 0; w < 5; w++) {
+      var d = Math.sin(t * 1.3 + w) * 4;
+      px(ctx, 10 + w * 22 + d, 64 + (w % 3) * 4, 10, 1, "rgba(127,178,221,.3)");
     }
-    for (var r = 0; r < rows.length; r++) {
-      for (var c = 0; c < rows[r].length; c++) {
-        if (!rows[r][c]) continue;
-        var lit = settled && r === 0;
-        stone(ctx, 22 + c * 10, baseY + r * 10, lit ? C.goldLite : (c % 2 ? C.brown : "#a0522d"));
-      }
+    // the banks
+    px(ctx, 0, 46, 18, 32, "#3a4664");
+    px(ctx, 102, 46, 18, 32, "#3a4664");
+    px(ctx, 0, 46, 18, 1, "#59689e");
+    px(ctx, 102, 46, 18, 1, "#59689e");
+
+    // the deck: every girder but the last is already in
+    for (var c = 0; c < 8; c++) {
+      if (c >= 6 && !settled) continue;
+      stone(ctx, 20 + c * 10, deckY, settled ? C.goldLite : (c % 2 ? C.brown : "#a0522d"));
     }
     if (!settled) {
-      stone(ctx, 82, 20 + drop, "#4f7d5a");
-      stone(ctx, 92, 20 + drop, "#4f7d5a");
+      var drop = Math.min(36, loop * 22);
+      stone(ctx, 80, 14 + drop, "#4f7d5a");
+      stone(ctx, 90, 14 + drop, "#4f7d5a");
     } else {
-      stone(ctx, 82, baseY, C.goldLite);
-      stone(ctx, 92, baseY, C.goldLite);
-      // a short, deliberate shower rather than a scatter
-      var lift = (loop - 1.9) * 46;
-      for (var s2 = 0; s2 < 6; s2++) {
-        px(ctx, 28 + s2 * 13, baseY - lift + Math.sin(s2 * 1.7) * 4, 1, 2, C.goldLite);
-      }
+      // and somebody walks across it
+      var wx = 6 + (loop - 1.7) * 38;
+      var step = Math.floor(t * 8) % 2;
+      px(ctx, wx + 1, deckY - 9, 3, 3, "#e0b088");
+      px(ctx, wx, deckY - 6, 5, 4, C.sky);
+      px(ctx, wx + step, deckY - 2, 1, 2, "#3a4358");
+      px(ctx, wx + 3 - step, deckY - 2, 1, 2, "#3a4358");
     }
-    px(ctx, 0, 78, CW, 2, C.steel);
+
     px(ctx, 0, 80, CW, 10, "#0a1120");
-    txt(ctx, "HOUSED", 4, 82, C.dim);
-    txt(ctx, settled ? "1" : "0", 44, 82, settled ? C.oliveLite : C.dim);
-    txt(ctx, "SHELTER", 116, 82, C.gold, "right");
+    txt(ctx, "CROSSED", 4, 82, C.dim);
+    txt(ctx, settled ? "1" : "0", 50, 82, settled ? C.oliveLite : C.dim);
+    txt(ctx, "SPANS", 116, 82, C.gold, "right");
   }
   function stone(ctx, x, y, col) {
     px(ctx, x, y, 9, 9, col);
@@ -97,61 +93,59 @@
     px(ctx, x + 1, y + 4, 7, 1, "rgba(0,0,0,.22)");
   }
 
-  /* ---- The Ninety-Nine: a shepherd leads a flock to an open gate ---- */
-  function ninetyNine(ctx, t) {
+  /* ---- Welcome Wagon: a van, its passengers, a lit door ---- */
+  function welcomeWagon(ctx, t) {
     px(ctx, 0, 0, CW, CH, C.deep);
-    // hills behind the pasture
     for (var h = 0; h < CW; h += 2) {
       var hh = 6 + Math.sin(h * 0.06) * 4 + Math.sin(h * 0.02) * 3;
       px(ctx, h, 24 - hh, 2, hh + 2, "#152241");
     }
-    for (var g = 0; g < 22; g++) {
-      px(ctx, (g * 23) % CW, 28 + (g * 31) % 48, 3, 1, "#1e3a2c");
-    }
+    px(ctx, 0, 60, CW, 1, "rgba(139,151,184,.18)");            // the road edge
     var loop = (t * 15) % 150;
-    var hx = -18 + loop;
-    var lineY = 52;
+    var vx = -18 + loop;
+    var lineY = 50;
 
-    // the gate, standing open
-    px(ctx, 98, lineY - 12, 3, 22, C.brown);
-    px(ctx, 114, lineY - 12, 3, 22, C.brown);
-    px(ctx, 98, lineY - 12, 19, 3, C.brown);
-    var pulse = Math.sin(t * 3) > 0 ? 0.8 : 0.42;
-    px(ctx, 101, lineY - 4, 13, 1, "rgba(124,193,148," + pulse + ")");
-    px(ctx, 101, lineY + 2, 13, 1, "rgba(124,193,148," + (pulse - 0.22) + ")");
+    // the welcome centre
+    px(ctx, 96, lineY - 12, 20, 20, "#2b3a63");
+    px(ctx, 95, lineY - 15, 22, 4, C.olive);
+    px(ctx, 95, lineY - 15, 22, 1, C.oliveLite);
+    var lit = Math.sin(t * 3) > -0.4;
+    px(ctx, 102, lineY - 4, 8, 12, lit ? C.goldLite : "#3a4358");
 
+    // passengers riding along behind
     for (var i = 0; i < 4; i++) {
-      var sx = hx - 12 - i * 11;
-      if (sx < -10) continue;
-      sheep(ctx, sx, lineY + 2 - ((Math.floor(t * 6) + i) % 2));
+      var sx = vx - 9 - i * 8;
+      if (sx < -8) continue;
+      var bob = (Math.floor(t * 6) + i) % 2;
+      person(ctx, sx, lineY + 1 - bob, i % 2 ? C.oliveLite : C.sky);
     }
-    // the one still lost, bleating up ahead
+    // somebody up ahead, waving for a lift
     if (loop < 100) {
-      var lb = Math.sin(t * 7) > 0 ? 0 : 1;
-      sheep(ctx, 58, 30 - lb);
-      px(ctx, 64, 25 - lb, 1, 2, C.goldLite);
-      px(ctx, 67, 23 - lb, 1, 2, C.goldLite);
+      var wb = Math.sin(t * 7) > 0 ? 0 : 1;
+      person(ctx, 58, 30 - wb, C.sky);
+      px(ctx, 62, 27 - wb, 1, 3, C.goldLite);
     }
-    // shepherd with staff
-    px(ctx, hx, lineY, 7, 8, C.gold);
-    px(ctx, hx + 2, lineY - 2, 4, 3, "#e0b088");
-    px(ctx, hx + 7, lineY - 4, 1, 13, C.brown);
+    // the wagon
+    px(ctx, vx, lineY, 12, 6, C.gold);
+    px(ctx, vx + 2, lineY - 2, 8, 2, "#9fd0f0");
+    px(ctx, vx + 1, lineY + 6, 2, 2, "#2a2320");
+    px(ctx, vx + 9, lineY + 6, 2, 2, "#2a2320");
+    px(ctx, vx + 12, lineY + 2, 1, 2, "#fff2cf");
 
-    px(ctx, 0, 78, CW, 2, "#132033");
     px(ctx, 0, 80, CW, 10, "#0a1120");
-    txt(ctx, "CARRYING", 4, 82, C.dim);
-    txt(ctx, "4", 52, 82, C.parchment);
-    txt(ctx, "HOME 12", 116, 82, C.oliveLite, "right");
+    txt(ctx, "ABOARD", 4, 82, C.dim);
+    txt(ctx, "4", 44, 82, C.parchment);
+    txt(ctx, "DROPPED 12", 116, 82, C.oliveLite, "right");
   }
-  function sheep(ctx, x, y) {
-    px(ctx, x, y, 8, 5, "#f2ece0");
-    px(ctx, x + 7, y + 1, 2, 3, "#3a3129");
-    px(ctx, x + 1, y + 5, 1, 2, "#4a3f36");
-    px(ctx, x + 5, y + 5, 1, 2, "#4a3f36");
+  function person(ctx, x, y, shirt) {
+    px(ctx, x + 1, y, 3, 3, "#e0b088");
+    px(ctx, x, y + 3, 5, 4, shirt);
+    px(ctx, x + 1, y + 7, 1, 2, "#3a4358");
+    px(ctx, x + 3, y + 7, 1, 2, "#3a4358");
   }
 
-  /* ---- Honest Scales: a balance tips, a crate rides the belt ---- */
-  function honestScales(ctx, t) {
+  /* ---- Lunch Lady: a clipboard, a tray, a lid, a verdict ---- */
+  function lunchLady(ctx, t) {
     px(ctx, 0, 0, CW, CH, "#0b1220");
     for (var i = 0; i < CW; i += 12) {
       px(ctx, i, 0, 6, 5, "rgba(179,49,58,.55)");
@@ -160,58 +154,53 @@
     px(ctx, 0, 5, CW, 1, "rgba(217,164,65,.45)");
 
     var loop = t % 3.6;
-    var honest = Math.floor(t / 3.6) % 2 === 0;
-    var tilt = loop > 1.5 ? (honest ? 0 : 4) : 0;
+    var fine = Math.floor(t / 3.6) % 2 === 0;
 
-    // the balance, hung on a chain, centred over the inspection bay
+    // the inspector's clipboard, hung on a chain
     var bx = 60;
-    for (var ch = 8; ch < 24; ch += 5) px(ctx, bx, ch, 1, 3, "#6f7b99");
-    px(ctx, bx - 16, 26 - tilt, 33, 2, "#cfd6e6");
-    px(ctx, bx - 1, 24, 3, 4, "#8b97b8");
-    px(ctx, bx - 18, 28 - tilt, 8, 1, "#cfd6e6");
-    px(ctx, bx + 12, 28 + tilt, 8, 1, "#cfd6e6");
+    for (var ch = 8; ch < 18; ch += 4) px(ctx, bx, ch, 1, 2, "#6f7b99");
+    px(ctx, bx - 9, 18, 19, 14, "#d8cdb4");
+    px(ctx, bx - 9, 18, 19, 2, "#8b97b8");
+    px(ctx, bx - 7, 23, 15, 1, "rgba(90,80,60,.5)");
+    px(ctx, bx - 7, 26, 10, 1, "rgba(90,80,60,.35)");
 
-    // the inspection bay, marked by corner brackets
-    var bay = [40, 16, 41, 56];
-    px(ctx, bay[0], bay[1], 6, 1, "rgba(255,203,107,.7)");
-    px(ctx, bay[0], bay[1], 1, 6, "rgba(255,203,107,.7)");
-    px(ctx, bay[0] + bay[2] - 6, bay[1], 6, 1, "rgba(255,203,107,.7)");
-    px(ctx, bay[0] + bay[2] - 1, bay[1], 1, 6, "rgba(255,203,107,.7)");
-    px(ctx, bay[0], bay[1] + bay[3] - 1, 6, 1, "rgba(255,203,107,.7)");
-    px(ctx, bay[0], bay[1] + bay[3] - 6, 1, 6, "rgba(255,203,107,.7)");
-    px(ctx, bay[0] + bay[2] - 6, bay[1] + bay[3] - 1, 6, 1, "rgba(255,203,107,.7)");
-    px(ctx, bay[0] + bay[2] - 1, bay[1] + bay[3] - 6, 1, 6, "rgba(255,203,107,.7)");
-
-    // belt
+    // the line
     px(ctx, 0, 62, CW, 12, "#1a2340");
     px(ctx, 0, 62, CW, 1, "rgba(217,164,65,.5)");
     px(ctx, 0, 73, CW, 1, "rgba(217,164,65,.5)");
     var off = Math.floor((t * 24) % 10);
     for (i = -10; i < CW + 10; i += 10) px(ctx, i - off, 70, 5, 2, "rgba(139,151,184,.28)");
 
-    // the crate crossing the bay
+    // a tray, lid coming up as it passes under the clipboard
     var cx = 106 - (loop / 3.6) * 112;
-    px(ctx, cx + 1, 34, 18, 5, C.cream);                       // the label it claims
-    px(ctx, cx, 42, 20, 20, C.brown);
-    px(ctx, cx + 2, 44, 16, 16, honest ? C.cream : "#c8a24a");
-    px(ctx, cx, 48, 20, 1, "rgba(0,0,0,.3)");
-    px(ctx, cx, 55, 20, 1, "rgba(0,0,0,.3)");
+    px(ctx, cx, 50, 24, 12, "#9aa6c4");
+    px(ctx, cx + 2, 52, 9, 8, "#6f7b99");
+    px(ctx, cx + 13, 52, 9, 8, "#6f7b99");
+    var open = loop > 1.5;
+    if (open) {
+      px(ctx, cx + 3, 53, 7, 6, "#d97b41");
+      px(ctx, cx + 14, 53, 7, 6, "#c8a24a");
+      if (!fine) { px(ctx, cx + 5, 55, 2, 2, "#7cc194"); px(ctx, cx + 16, 54, 2, 2, "#7cc194"); }
+      px(ctx, cx - 2, 44, 28, 2, "#cfd6e6");                    // lid, up
+    } else {
+      px(ctx, cx - 1, 46, 26, 5, "#cfd6e6");                    // lid, down
+      px(ctx, cx + 10, 43, 4, 3, "#8b97b8");
+    }
+    // the stamp on the side
+    px(ctx, cx - 1, 34, 26, 7, "#e6d8bd");
     if (loop > 1.9) {
-      var col = honest ? C.oliveLite : C.crimsonLite;
-      px(ctx, cx - 1, 46, 22, 9, "rgba(4,6,13,.8)");
-      px(ctx, cx - 1, 46, 22, 1, col); px(ctx, cx - 1, 54, 22, 1, col);
-      px(ctx, cx - 1, 46, 1, 9, col);  px(ctx, cx + 20, 46, 1, 9, col);
-      txt(ctx, honest ? "FAIR" : "FALSE", cx + 10, 48, col, "center");
+      var col = fine ? C.oliveLite : C.crimsonLite;
+      txt(ctx, fine ? "SERVE" : "BIN", cx + 12, 35, col, "center");
     }
 
     px(ctx, 4, 78, 34, 8, "rgba(179,49,58,.25)");
-    txt(ctx, "REFUSE", 21, 79, C.crimsonLite, "center");
+    txt(ctx, "BIN IT", 21, 79, C.crimsonLite, "center");
     px(ctx, 82, 78, 34, 8, "rgba(79,125,90,.25)");
-    txt(ctx, "SELL", 99, 79, C.oliveLite, "center");
+    txt(ctx, "SERVE", 99, 79, C.oliveLite, "center");
   }
 
-  /* ---- Enumerated: the eagle threads a gate, its bill trailing ---- */
-  function enumerated(ctx, t) {
+  /* ---- How a Bill Becomes Law: the eagle threads a stage, bill trailing ---- */
+  function billBecomesLaw(ctx, t) {
     px(ctx, 0, 0, CW, CH, "#16234a");
     stars(ctx, t, 10, 34);
     var sx = -(t * 7) % 120;
@@ -232,7 +221,7 @@
     var top = 16, gap = 38;
     column(ctx, gx, 0, top);
     column(ctx, gx, top + gap, 74 - top - gap);
-    if (gx > 4 && gx < CW - 18) txt(ctx, "SENATE", gx + 7, top + 2, C.gold, "center");
+    if (gx > 4 && gx < CW - 18) txt(ctx, "CLOTURE", gx + 7, top - 7, C.gold, "center");
 
     // eagle: white head, gold beak, one wing beating
     var flap = Math.sin(t * 9) > 0;
@@ -253,9 +242,9 @@
     px(ctx, pk - 4, 52, 9, 3, C.goldLite);
     px(ctx, pk - 1, 55, 2, 5, C.brown);
 
-    px(ctx, 0, 0, CW, 9, "rgba(4,6,13,.72)");
+    px(ctx, 0, 0, CW, 9, "#070c18");
     txt(ctx, "PAGES 6", 3, 1, C.oliveLite);
-    txt(ctx, "GATES 4", 117, 1, C.goldLite, "right");
+    txt(ctx, "STAGE 4", 117, 1, C.goldLite, "right");
   }
   function column(ctx, x, y, h) {
     if (h <= 0) return;
@@ -266,8 +255,8 @@
     px(ctx, x, y + h - 1, 14, 1, "rgba(217,164,65,.6)");
   }
 
-  /* ---- Ten Talents: coins fall to a basket; a subsidy trails strings ---- */
-  function tenTalents(ctx, t) {
+  /* ---- No Strings Attached: coins fall; the free money trails strings ---- */
+  function noStrings(ctx, t) {
     px(ctx, 0, 0, CW, CH, "#0a1020");
     stars(ctx, t, 14, 50);
     // house with a lit window
@@ -300,27 +289,27 @@
     px(ctx, bx, 72, 30, 2, C.gold);
 
     // the split, as the cabinet shows it
-    px(ctx, 0, 0, CW, 9, "rgba(4,6,13,.72)");
+    px(ctx, 0, 0, CW, 9, "#070c18");
     txt(ctx, "GIVE", 3, 1, C.oliveLite);
     px(ctx, 27, 2, 14, 4, "#141d33"); px(ctx, 27, 2, 4, 4, C.oliveLite);
-    txt(ctx, "INV", 45, 1, C.goldLite);
-    px(ctx, 65, 2, 14, 4, "#141d33"); px(ctx, 65, 2, 7, 4, C.goldLite);
+    txt(ctx, "GROW", 45, 1, C.goldLite);
+    px(ctx, 71, 2, 8, 4, "#141d33"); px(ctx, 71, 2, 4, 4, C.goldLite);
     txt(ctx, "KEEP", 83, 1, C.sky);
     px(ctx, 108, 2, 10, 4, "#141d33"); px(ctx, 108, 2, 4, 4, C.sky);
   }
 
   var RENDERERS = {
-    "living-stones": livingStones,
-    "ninety-nine": ninetyNine,
-    "honest-scales": honestScales,
-    "enumerated": enumerated,
-    "ten-talents": tenTalents
+    "build-the-bridge": buildTheBridge,
+    "welcome-wagon": welcomeWagon,
+    "lunch-lady": lunchLady,
+    "bill-becomes-law": billBecomesLaw,
+    "no-strings": noStrings
   };
 
-  /* ---- Jubilee: the locked cabinet, still keeping its own time ---- */
-  function jubilee(ctx, t) {
+  /* ---- Clean Slate: the out-of-order cabinet, still keeping its own time ---- */
+  function cleanSlate(ctx, t) {
     px(ctx, 0, 0, CW, CH, "#05070f");
-    txt(ctx, "JUBILEE", 60, 16, C.gold, "center");
+    txt(ctx, "CLEAN SLATE", 60, 16, C.gold, "center");
     var lit = Math.floor(t) % 8;
     for (var i = 0; i < 7; i++) {
       var on = i < lit;
@@ -328,13 +317,13 @@
       if (on) px(ctx, 25 + i * 11, 34, 8, 1, C.goldLite);
     }
     px(ctx, 25, 47, 73, 1, "rgba(217,164,65,.3)");
-    // a ledger line, struck through once the seventh seven lands
-    txt(ctx, "DEBT OWED", 60, 55, lit >= 7 ? C.dim : C.parchment, "center");
+    // the balance, struck through once the seventh year lands
+    txt(ctx, "YOU OWE", 60, 55, lit >= 7 ? C.dim : C.parchment, "center");
     if (lit >= 7) px(ctx, 32, 58, 56, 1, C.crimson);
-    txt(ctx, lit >= 7 ? "FORGIVEN" : "YEAR " + lit, 60, 70, lit >= 7 ? C.oliveLite : C.dim, "center");
+    txt(ctx, lit >= 7 ? "NOTHING" : "YEAR " + lit, 60, 70, lit >= 7 ? C.oliveLite : C.dim, "center");
   }
 
-  RENDERERS.jubilee = jubilee;
+  RENDERERS["clean-slate"] = cleanSlate;
 
   /* ---- driver ---- */
 

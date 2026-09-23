@@ -225,7 +225,6 @@ a:hover { color: #fff; }
   font-family: var(--mono); font-size: 11.5px; color: var(--muted-2); letter-spacing: .03em;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
-.cabinet .counters b { color: var(--crimson-lite); font-weight: 500; }
 .cabinet .counters .play { color: var(--gold-lite); }
 .cabinet:hover .counters .play { color: #fff; }
 
@@ -249,45 +248,7 @@ a:hover { color: #fff; }
 .prose li { margin-bottom: 9px; }
 .prose .lead { font-size: 21px; color: var(--parchment); }
 
-.scripture {
-  border-left: 3px solid var(--gold);
-  background: linear-gradient(90deg, rgba(217,164,65,.10), rgba(217,164,65,.02));
-  padding: 15px 22px; margin: 24px 0;
-  font-size: 19.5px; color: var(--parchment);
-}
-.scripture cite {
-  display: block; margin-top: 9px;
-  font-family: var(--mono); font-style: normal; font-size: 11.5px;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--gold);
-}
 
-/* ---------- The ledger table ---------- */
-
-.table-scroll {
-  overflow-x: auto; margin: 26px 0 10px;
-  border: 1px solid rgba(217,164,65,.2); border-radius: 4px;
-  background: rgba(10,15,30,.5);
-}
-table.ledger { width: 100%; border-collapse: collapse; min-width: 760px; font-size: 16.5px; }
-table.ledger th, table.ledger td {
-  text-align: left; padding: 15px 17px;
-  border-bottom: 1px solid rgba(217,164,65,.14); vertical-align: top;
-}
-table.ledger tbody tr:last-child td { border-bottom: 0; }
-table.ledger tbody tr:hover { background: rgba(255,203,107,.035); }
-table.ledger thead th {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .13em;
-  text-transform: uppercase; color: var(--gold-lite);
-  background: rgba(217,164,65,.07);
-  border-bottom: 1px solid rgba(217,164,65,.35);
-  position: sticky; top: 0;
-}
-table.ledger td.theirs { color: var(--muted); }
-table.ledger td.ours { color: var(--parchment-2); }
-table.ledger td strong { display: block; margin-bottom: 3px; font-weight: 600; }
-table.ledger td.theirs strong { color: var(--crimson-lite); }
-table.ledger td.ours strong { color: var(--gold-lite); }
-table.ledger td small { font-family: var(--mono); font-size: 11px; color: var(--muted-2); letter-spacing: .04em; }
 
 /* ---------- Game page ---------- */
 
@@ -431,12 +392,6 @@ dl.keys dt {
 }
 dl.keys dd { margin: 0; color: var(--parchment-2); font-size: 16px; }
 
-.vs-card { border-left: 3px solid var(--crimson) !important; }
-.vs-card .theirs {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--crimson-lite); margin-bottom: 10px;
-  padding-bottom: 9px; border-bottom: 1px solid rgba(179,49,58,.3);
-}
 
 /* ---------- Footer ---------- */
 
@@ -468,25 +423,3 @@ dl.keys dd { margin: 0; color: var(--parchment-2); font-size: 16px; }
   .cabinet:hover { transform: none; }
 }
 
-/* ---------- About page ---------- */
-
-.prose h3 .numeral {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; margin-right: 12px;
-  vertical-align: -6px;
-  border: 1px solid rgba(217,164,65,.45); border-radius: 3px;
-  background: rgba(217,164,65,.1);
-  color: var(--gold-lite); font-size: 10px;
-}
-
-hr.rule {
-  border: 0; height: 1px; margin: 52px 0 32px;
-  background: linear-gradient(90deg, transparent, rgba(217,164,65,.5), transparent);
-}
-
-.closing {
-  font-family: var(--display); font-size: 13px; line-height: 1.9;
-  text-align: center; color: var(--gold-lite);
-  text-shadow: 0 0 26px rgba(255,203,107,.28);
-  margin: 0 0 20px;
-}

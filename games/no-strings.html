@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NO STRINGS ATTACHED — The Free Arcade</title>
+<meta name="description" content="NO STRINGS ATTACHED: Free money. Read the fine print.">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/arcade.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🕯️</text></svg>">
+</head>
+<body>
+<a class="skip" href="#screen">Skip to the game</a>
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html"><span class="torch">🕯️</span> THE <b>FREE</b> ARCADE</a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="../index.html">Arcade</a>
+      <a href="../about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="game-layout">
+
+  <div>
+    <div class="cab-frame">
+      <div class="cab-marquee">
+        <span>NO STRINGS ATTACHED</span>
+        <span class="verse">05</span>
+      </div>
+      <div class="screen-shell">
+        <canvas id="screen" width="300" height="300" aria-label="NO STRINGS ATTACHED game screen. Use the on-screen buttons or the keys listed below to play."></canvas>
+      </div>
+
+      <div class="control-panel">
+      <div class="controls-row">
+        <button class="btn primary" data-key="start" type="button">Start / Restart</button>
+        <button class="btn" data-key="pause" type="button">Pause</button>
+        <a class="btn" href="../index.html">← All cabinets</a>
+      </div>
+
+      <div class="touchpad">
+        <button class="btn" data-key="left" type="button">◀</button>
+        <button class="btn" data-key="right" type="button">▶</button>
+        <button class="btn" data-key="action" type="button">SLICE</button>
+        <button class="btn" data-key="up" type="button">MORE</button>
+        <button class="btn" data-key="down" type="button">LESS</button>
+      </div>
+      </div>
+      <p class="cab-hint">
+      Ninety seconds on the clock. Kept cash shrinks a little every second. Grown money compounds. Given money turns into people who owe you one, and they send work back your way.
+      </p>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <section>
+      <h2>HOW TO PLAY</h2>
+      <dl class="keys">
+        <div><dt>← →</dt><dd>Move the basket</dd></div>
+        <div><dt>SPACE</dt><dd>Pick which slice you're steering</dd></div>
+        <div><dt>↑ ↓</dt><dd>Move that slice up or down</dd></div>
+        <div><dt>1 2 3</dt><dd>Jump to Give / Grow / Keep</dd></div>
+        <div><dt>RED CRATE</dt><dd>Free money*</dd></div>
+        <div><dt>P</dt><dd>Pause</dd></div>
+        <div><dt>R</dt><dd>Start over</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <h2>*FINE PRINT</h2>
+      <p>The red crates really are free money. You will get the full amount, immediately, no questions asked.</p><p>Each one also ties a string to your basket. The strings do not come off. The basket does get smaller. Terms may apply.</p>
+    </section>
+
+    <section>
+      <h2>NEXT CABINET</h2>
+      <p><a href="build-the-bridge.html">BUILD THE BRIDGE →</a></p>
+    </section>
+  </aside>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="disclaimer">
+      The Free Arcade is satire. It is not a government website, carries no seal, takes no public money,
+      and is not affiliated with or endorsed by any government, agency, official, or campaign.
+      All games, art and text are original.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/pixelfont.js"></script>
+<script src="../assets/js/arcade.js"></script>
+<script src="../assets/js/games/no-strings.js"></script>
+</body>
+</html>
